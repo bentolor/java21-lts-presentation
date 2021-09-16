@@ -1,0 +1,13 @@
+# Nicht alltäglich: Neues bei Tools, GCs, Vector und FFM API
+Neben den prominenten Neuerungen bei API und Sprache bringt das neue Java 21 wieder viele Verbesserungen unter der Haube sowie Neues im Bereich der Performance, Sicherheit und Tools mit sich. In dieser Session wagen wir einen Blick auf die weniger alltäglichen Themen und geben einen Überblick über die wichtigsten Änderungen seit Java 17 und 11.
+
+Der Vortrag zeigt, wie Java 21 helfen kann, übliche, aber auch spezielle Anwendungen zu beschleunigen. Die Teilnehmenden erfahren mehr über experimentelle Funktionen wie die Vector API und das Foreign Function & Memory (FFM) API und wie diese der wachsenden Bedeutung von Machine Learning gerecht werden möchten, aber dabei bereits einige Anläufe hinter sich haben.
+
+Nicht zuletzt betrachtet der Vortrag, wie sich die neuesten Verbesserungen im Bereich der Garbage Collectoren (GC) einsortieren lassen und mit welchen alten Zöpfen Java nun wirklich aufräumt.
+Lernziele
+
+- Innovationen bei den Garbage Collectors
+- Neue Ansätze für bessere Anwendungsperformance
+- Einblick in Foreign Function & Memory API
+- Motivation und Neues bei der Vector API
+- Vermischtes aus dem Bereich Tools, Kryptografie und JVM

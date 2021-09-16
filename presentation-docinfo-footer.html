@@ -1,0 +1,19 @@
+<script src="reveal.js-plugins/chalkboard/plugin.js"></script>
+<script>
+  Reveal.configure({
+    chart: {
+		defaults: {
+			color: 'lightgray', // color of labels
+			scale: {
+				beginAtZero: true,
+				ticks: { stepSize: 1 },
+				grid: { color: "lightgray" } , // color of grid lines
+			},
+		},
+		line: { borderColor: [ "rgba(20,220,220,.8)" , "rgba(220,120,120,.8)", "rgba(20,120,220,.8)" ], "borderDash": [ [5,10], [0,0] ] },
+		bar: { backgroundColor: [ "rgba(20,220,220,.8)" , "rgba(220,120,120,.8)", "rgba(20,120,220,.8)" ]},
+		pie: { backgroundColor: [ ["rgba(0,0,0,.8)" , "rgba(220,20,20,.8)", "rgba(20,220,20,.8)", "rgba(220,220,20,.8)", "rgba(20,20,220,.8)"] ]},
+	},
+  })
+  Reveal.registerPlugin(RevealChart)
+</script>

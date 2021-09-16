@@ -1,0 +1,23 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    asciidoctor (2.0.20)
+    asciidoctor-chart (1.0.0)
+      asciidoctor (~> 2.0)
+      tilt (~> 2.0.0)
+    asciidoctor-kroki (0.8.0)
+      asciidoctor (~> 2.0)
+    asciidoctor-revealjs (5.0.1)
+      asciidoctor (>= 2.0.0, < 3.0.0)
+    tilt (2.0.11)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  asciidoctor-chart
+  asciidoctor-kroki
+  asciidoctor-revealjs
+
+BUNDLED WITH
+   2.1.4

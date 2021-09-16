@@ -1,0 +1,1764 @@
+= Nicht alltäglich: Neues bei Tools, GCs, Vector und FFM API
+Benjamin Schmid, ben@tolor.de @ben@tolor.de
+1.0, 2023-10-04
+// :docinfo: private would enable presentation-docinfo-footer.html
+:revealjs_customtheme: reveal.js/dist/theme/moon.css
+//:revealjs_autoSlide: 5000
+:revealjs_history: true
+:revealjs_fragmentInURL: true
+//:revealjs_viewDistance: 10
+:revealjs_fragments: true
+:revealjs_width: 1408
+:revealjs_height: 792
+:revealjs_controls: false
+:revealjs_controlsLayout: edges
+:revealjs_controlsTutorial: true
+:revealjs_slideNumber: c/t
+:revealjs_showSlideNumber: speaker
+:revealjs_autoPlayMedia: true
+:revealjs_defaultTiming: 49
+//:revealjs_transitionSpeed: fast
+:revealjs_parallaxBackgroundImage: images/architecture-1216055-colored.bak.jpg
+:revealjs_parallaxBackgroundSize: 3303px 2202px 
+//:revealjs_parallaxBackgroundImage: images/what-s-under-the-hood-1560145-light.jpg
+//:revealjs_parallaxBackgroundSize: 5000px 3376px
+:stylesdir: css/
+:customcss: css/presentation.css
+:imagesdir: images
+:source-highlighter: highlight.js
+//:highlightjsdir: https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10-stable/build
+//:highlightjs-theme: css/hljs/agate.css
+//:highlightjs-theme: css/hljs/base16/framer.css
+//:highlightjs-theme: css/hljs/github-dark.css
+:highlightjs-theme: css/hljs/gradient-dark.css
+//:highlightjs-theme: css/hljs/sunburst.css
+// we want local served font-awesome fonts
+:icons: font
+:icon-set: far
+:iconfont-remote!:
+:iconfont-name: ../fonts/fontawesome/css/all
+
+[.notes]
+--
+Vielen Dank …!
+
+Hallo & Herzlich Willkommen! Mein Name ist Benjamin Schmid und ich bin aktuell als Tech Lead & Account CTO bei der Nagarro tätig. Seit über 20 Jahren bin ich in verschiedensten, technisch leitenden Rollen unterwegs  – vom Technology Advisor über Manager R&I bis zum Portfolio Manager – und immer gern vorne mit dabei, wenn es um Probleme, Fragen und Innovationen rund um methodischen & technologischen Fragestellung in der Softwareentwicklung geht. 
+
+Dabei war war ich immer ein großer Freund der qualitativ hochwertigen, innovativer und lösungsorientierte Softwareentwicklung. Und das spiegelt sich meiner Ansicht nach auch darin, dass über die Zeit das Java-Ökosystem stets einen wichtigen Fokuspunkt für mich darstellte.
+
+Daher freue ich mich heute besonder wieder über die Gelegenheit, ein bisschen tiefer über die neue Java LTS-Version 21 berichten zu dürfen, und welche Verbesserungen auch für die alltägliche Projektpraxis echte Mehrwerte versrepchen. In der Sessions hier soll es dabei weniger um die prominente Sprachfeatures gehen, sondern wir wollen einen Blick auf die Neuerungen bei den Internas, den eher exotischen APIs und den Tools wagen! 
+
+Das wird ein bisschen ein wilder Ritt durch ganz verschiedenen Themen. 
+Aber auch wenn nicht jedes Thema für jeden Projektkontext im Vordergrund steht, ist ein Blick über den Tellerand immer wieder spannend, was sich letztendlich auch innerhalb der Java Plattform so alles tut.
+
+Ich denke, die Vorfreude auf Java 21 lohnt sich! 
+
+Denn 3 Dinge die Java 21 unter der Haube mit sich bringt sind z.B.:
+--
+
+// [.lightbg, background-image="327-chevy-engine-1542516.jpg",background-opacity="0.9"]
+//== 3 Motor-Upgrades
+//[decent]#… auf die ich mich in Java 17 freue#
+
+[.lightbg.forcebottom,background-video="time-passes-by-so-quickly.mp4",background-video-loop="true",background-opacity="1"]
+== Mehr Speed bei weniger RAM
+[.notes]
+--
+… denn der neue Generational ZGC schafft beides auf einen Schlag: Schnellerer Durchsatz und zugleich mit weniger RAM auskommen! Und ZGC bleibt nun robuster, auch wenn die Bytes einmal _wirklich_ knapp werden…
+--
+
+[%auto-animate]
+[.lightbg.forcebottom,background-video="pexels-cottonbro-9293441.mp4",background-video-loop="true",background-opacity="1"]
+=== 5.388 weniger Bugs, dafür 3.539 neue Enhancements
+[.notes]
+--
+…Der Fehlerteufel steckt überall! Auch im JDK wurden als 5-tausend Bugs seit JDK17 LTS behoben! Und zugleich flossen über dreieinhalbtausend Detail-Verbesserungen mit ein!…
+
+https://bugs.openjdk.org/browse/JDK-8284090?jql=project%20%3D%20JDK%20AND%20statusCategory%20%3D%20Done%20AND%20fixVersion%20%3E%3D%2018%20AND%20fixVersion%20%3C%3D%2021%20AND%20issuetype%20%3D%20Bug%20%20ORDER%20BY%20issuetype%20DESC%2C%20updated%20DESC
+
+--
+
+[%auto-animate,data-id=planets]
+[.lightbg.forcetop,background-video="pexels-koolshooters-7327408.mp4",background-video-loop="true",background-opacity="1"]
+=== Einfacher und schneller an den Start
+[.notes]
+--
+Aller Anfang ist schwer! 
+
+Das muss nicht mehr sein: In Zukunft wird es für Einsteiger noch leichter, einfach und schneller loszulegen
+--
+
+
+//[background-video="coffee-beans.mp4",background-video-loop="true",options="loop,muted",background-opacity="0.8"]
+== Agenda
+[.decentlightbg.boxed]
+. **Innovationen bei den Garbage Collectors**
+. **Einblick in das Foreign Function & Memory API**
+. **Wofür ist das Vector API gut?**
+. **Vermischtes aus dem Bereich Tools, Kryptografie und JVM**
+. **Vermischtes: Von alten Zöpfen & neuen Kleinigkeiten**
+. **Ausblick**
+
+[.notes]
+--
+Aber Blicken wir kur auf unsere Programm für heute…
+--
+
+
+
+[.lightbg,background-video= "garbage-collecting.mp4",options="loop,muted",background-opacity="0.9"]
+== Garbage Collectoren
+[.notes]
+--
+. Kommen wir zum ersten Theme: GCs. Ein zentrales Thema für Performance & Skalierbarkeit.
+. Neben dem Arbeitstier G1, welches viele Verbesserungen im Detail erfahren, hat sich vor allem ein GC einen Namen gemacht: Der ZGC, der mit Java 21 einen weiteren Sprung hingelegt hat. 
+. Wir schauen dazu ein bisschen tiefer hinter die Kulissen von ZGC selbst, geben aber auch eine kleine Stillberatung für die Auswahl des richtigen GCs!
+--
+
+
+[.degrade.x-small]
+=== GC Evolution Timeline
+[.col2]
+--
+[width=90%,grid=vertical,frame=none,cols="^1e,5"]
+|===
+|11 | [decent]#icon:vial[]# ZGC Experimental
+|12 | [decent]#icon:vial[]# Shenandoah Experimental +
+      [decent]#icon:compress-alt[] G1 Uncommit Memory# +
+      [decent]#icon:undo[] ZGC Class Unloading#
+|[decent]#13# | [decent]#icon:compress-alt[] ZGC Uncommit Memory#
+|14 | icon:windows[] & icon:apple[] ZGC Support +
+      icon:trash[] CMS Removal +
+      [decent]#icon:bomb[] ParalellOldGC Deprecation#
+|===
+--
+[.col2]
+--
+[width=90%,grid=vertical,frame=none,cols="^1e,5"]
+|===
+|15 | icon:award[] **Shenandoah** & +
+      icon:award[] **ZGC** Production-ready
+|[decent]#16# | [decent]#icon:chart-line[] ZGC Improvements#
+| **17** | [decent]#icon:flag[] _Java 17 LTS_#
+|[decent]#18# | [decent]#icon:clone[] ZGC String depduplication#
+
+|**21** | [icon:sort-amount-up[] Generational ZGC   +
+      [decent]#icon:life-ring[] Last Resort G1 Full GC#
+
+|===
+--
+
+[.notes]
+--
+. ZGC & Shenandoah nicht neu; bereits mit JDK15 production-ready
+. Viel Detailpflege auch an deren GCs. Allen voran G1: Dem Arbeitspferd & default in aktuellen JVMs. 
+. G1: Auch wenn wenig Schlagzeilen, so doch kontinuerliche Verbesserungen
+. Neu in JDK21: ZGC unterstützt nun Generationen; gewinnt damit nochmals neues Konzept
+. Auch Shenandoah hatte lange Generational Support für JDK21 geplant; aber im letzten Moment Rückzieher gemacht. Obwohl ZGC & Shenandoah vom Konzept vergleichbar sind, hat ZGC seinen Vorsprung damit nun in Java 21 weiter ausgebaut.
+
+Aber was zeichnet denn nun ZGC – und auch Shenandoah – nun aus? Und sind sie das richtige für mich? 
+
+Werfen wir einen näheren Blick darauf…
+--
+
+
+
+=== Die neue Generation der Low-Latency GCs
+
+[%step]
+* Moderne Architekturen: _Multi-Core_ & _TB RAM_
+* _kurze GC Pausen_ im einstelligen Millisekunden-Bereich +
+  → erkauft **Responsiveness** gegen _Durchsatz_
+* (fast) vollständig _parallel & nebenläufig_ +
+  Pausen unabhängig von Größe des Heaps
+* Unterstützen _Class Unloading_ & _Uncommit Memory_
+* Einfach zu konfigurieren & Auto-tuning
+
+[.notes]
+--
+* Beides sog. Low-Latency GCs
+* Veränderte Umgebungen: _Multi-Core_ & _TB RAM_
+* Ziel ist immer **niedrige Latenz** auf Kosten von Durchsatz
+** sprich: Schnellere Reaktion _aber_ längere Gesamt-Laufzeit!
+** bei G1 & Co gerne mal 200~500ms; hier: 1-10ms;
+* erreichen Sie durch: Parallle & Nebeläufig
+** Zumindest ZGC: Latenz komplett unabhängig von RAM-Size. Sprich: Auch große RAM-Szenarien
+* Gehen auch flexibler & dynamischer mit RAM um: Können auch RAM bzw. HEAP freigeben
+* GC's richtig zu konfigurieren ist quasi unmöglich: Darum setzen sie auch auf mehr Auto-Tuning und setzen Werte selbst bzw. passen diese sogar dynamisch zur Laufzeit an.
+--
+
+
+=== Z Garbage Collector (ZGC)
+
+[col2]
+--
+image:in_place_relocation2.svg[width=600,role=plain]
+
+`-XX:+UseZGC`
+--
+
+[col2]
+--
+_„A scalable low-latency garbage collector“_
+
+[.small]
+.Ziele
+* GC Pausen kleiner [deleted]#10ms# **1ms**
+* Durchsatzeinbuße max. -15% gegenüber G1
+* Heapgrößen  8MB – **16TB**
+* Einfaches bzw. Automatisches Tuning
+
+[.left%step]
+[emphasize]#_Colored Pointers & Load/Write Barriers_ +
+→ Object Relocation#
+--
+
+[.refs]
+--
+https://wiki.openjdk.java.net/display/zgc/Main
+--
+
+[.notes]
+--
+* Aus dem Hause _Oracle_; ehemals kommerziell
+* JDK seit 11; Production since JDK 15; dann auch mit Linux/Win/macOS
+* Ziele …
+* Pausen unabhängig von Heap **und** Live- & Root-Set
+* Eigenschaften: Parallel, Regionen-basiert,  _Compacting_ und _NUMA-aware_
+* Konzept: _Colored pointers_ plus _Load barriers_ → Relocation
+** "Schwuppizität" zum Preis von CPU und Gesamtlaufzeit
+** in JDK17 ohne Generation. seit JDK21: Generation. Kommen wir gleich drauf.
+
+--
+
+[.left]
+=== Shennadoah GC
+
+_„A low-pause-time garbage collector by concurrent evacuation work“_ +
+
+[col2.small]
+--
+* ZGC sehr ähnlich _Brooks (Forward) Pointers_
+
+* Bietet verschieden Modi & Heuristic-Profile:
+  _adaptive, static, compact, aggressive_
+
+* Latenz gering abhängig von Root- & Live-Set
+
+* Schwächelt bei zahlreichen Weak References
+--
+
+[col2.small]
+--
+* **Red Hat** Kind → andere Service Offerings
+
+* **Backports** für JDK 8 & 11; auch **32-bit**
+
+
+[x-small]#`-XX:+UseShenandoahGC`#
+--
+
+[.center]
+
+image:shenandoah-gc-cycle.png[role=plain, width=1000]
+
+
+[.refs]
+--
+https://wiki.openjdk.java.net/display/shenandoah
+--
+
+[.notes]
+--
+* Konzeptionell ziemlich vergleichbar. Hatte eigentlich auch Generational für JDK21 vor; aber in letzter rückzieher gemacht. 
+* Trotzdem hier kurzes Portrait zur Einsortierung & Abgrenzung
+
+.Facts
+* Name nach US Nationalpark
+* von Red Hat → auch Backports & Architekturen (z.B. ARM32)
+* seit 2013 und seit v12 im JDK; seit JDK15 Production
+* Pausen steigen mit Root Set / Live Set
+--
+
+
+[.columns]
+=== End-Gegner aller GCs: „Allocation Stall“
+
+[.column.left]
+--
+Objekte entstehen schneller, wie der GC Speicher wieder frei räumen kann:
+
+1. Große Objektgraphen _und/oder_
+2. Hohe Allokationsraten
+
+
+[.fragment]
+.Workarounds
+* Mehr RAM: Heap-Size erhöhen
+* Mehr CPU: Durch mehr GC threads
+--
+
+[.column]
+--
+image::allocation-stall.png[GC Runaway]
+--
+
+[.notes]
+--
+* Endgegener _aller_ GCs: Objekte entstehen & sterben schneller als GC diese Aufräumen kann.
+* Effekte: 
+   1. Allocation Stall: Heap exhausted was dann zu Pausen führt bis der GC wieder aufgeholt hat
+   2. OOM: Sprengt es gesetzte Zeitrahmen führt das zum Programmabbruch.
+
+.Schematisches Diagramm
+* Arbeitsbereich ist links! Rechts = Überlast
+* S & Z : Vergleichbare, gegenüber G1 deutlich niederige Latenzen
+* Verhalten bei wachsender Last: Hier scheint ZGC irgendwann den Punkt zu erreichen wo es nicht mehr mithalten kann; bei Shenandoah früher Latenz
+* Man sieht klar: G1 ist Tradeoff zwischen Latenz & Durchsatz → auch bei höhere Durchsatz stabil
+--
+
+
+
+[.columns]
+=== Generational GC'ing
+
+[.column.is-one-third]
+--
+.Arbeits-Hypothese: 
+
+> Most Java objects are short-lived.
+--
+
+[.column]
+--
+// Bild; Young / Old promotion. Actually split. Many Young GC + Old GC running in parallel
+
+image::gc-generations.png[Old Gen vs. Young Gen]
+--
+
+
+[.notes]
+--
+* Ziel: Speicher schneller freigeben.
+
+* Tries to split heap in two parts: Young Generation + Old Generation
+* Only objects surviving more runs gets promoted to old generation. Makes GC on young gen more profitable.
+* _Minor collection_: Young gen only.
+* _Major collections_:  Young + Old Gen
+
+--
+
+=== Generational GC's Status
+
+[.x-small,cols="^1,^1,2s",width=50%]
+|===
+| Young Gen | Old Gen | Garbage Collector
+
+2+| icon:check-square[set=far]
+<s| G1
+
+2+| icon:check-square[set=far] 
+<s| ZGC 
+
+2+| icon:square[set=far] 
+<s| Shenandoah
+
+| icon:check-square[set=far] 
+| icon:check-square[set=far] 
+| Serial GC
+
+| icon:check-square[set=far] 
+| icon:check-square[set=far] 
+| Parallel GC
+
+| [decent]#icon:square[set=far]#
+| [decent]#icon:check-square[set=far]#
+| [.line-through.decent]#CMS# 
+
+| icon:square[set=far] 
+| icon:square[set=far] 
+| Epsilon GC
+|===
+
+[.decent.small]
+{nbsp} +
+Generational Ansatz nicht neu: GC früher separat für Young Gen & Old Gen getrennt! +
+Neue GCs managen den Heap alleine & vollständig.
+
+
+
+
+
+
+=== ZGC: Colors & Barriers
+
+image::colored-pointers.png[Colored Pointers]
+
+[.notes]
+--
+* colors are metadata bits in the pointers that encodes some extra life cycle information
+* Load Barriers (& store barries): Checkt bits. Wenn Colors != good → slow path. Performanz-Kritisch, da typischerweise 80% read-ops.
+* Da jedes Bit 1 oder 0 sein kann → 4 Adressen → Multi-Mapped Memory: selbe Speicherzelle an mehreren Stellen
+--
+
+=== ZGC: Multi-Mapped Address
+image::colored-pointers-multimapped.png[Colored Pointers]
+
+[%auto-animate]
+=== Generational ZGC: Going "Colorless" [jep]#https://openjdk.java.net/jeps/439[JEP 439]#
+image::colorless-1.png[Colored Pointers]
+
+[%step]
+**Problem:** Multi-mapped memory going beserk with generational ZGC!
+
+[.notes]
+--
+* Generation ZGC → 12 "color bits" → 2^12 Adressen
+--
+
+[%auto-animate]
+=== Generational ZGC: Going "Colorless" [jep]#https://openjdk.java.net/jeps/439[JEP 439]#
+image::colorless-2.png[Colored Pointers]
+[%step]
+**Lösung:** Aktualisiertes Layout & Bitshift erlaubt Color-check & -elimination.  +
+[.decent.x-small]#(Stark vereinfachte Darstellung)#
+
+[.notes]
+--
+* Tweak: Bits an den Rand verschieben + Shift-Rights.
+** Ermöglicht mehr colors & logic als zuvor, bei immer noch 2 cpu instructions für ein LOAD.
+--
+
+
+[.columns.x-small]
+=== ZGC: Automatic Tunings
+[.column.left]
+--
+.Dynamic Generation Sizing
+* Freier Speicher ist nicht in Generationen aufgeteilt
+* Zusätzlich: _In-place compaction capabilities_  +
+  Somit: Nie _evacuation failure_ (und: Kein `-Xmn` nötig)
+
+.Dynamic Tenuring Threshold
+* Kein `-XX:TenuringThreshold` nötig: +
+  Automatisch getuned.
+
+.Initiating Heap Occupancy
+* Kein `-XX:InitiatingHeapOccupancyPercent`: +
+  Automatisch getuned.
+--
+[.column.left]
+--
+.Dynamic number of threads
+* Kein `-XX:ConcGCThreads` nötig: +
+  Boosted automatisch bei Allocation Spikes.
+
+.Things you SHOULD tune
+* Just set the max heap size: `-Xmx`
+
+
+[source,bash]
+----
+java -XX:+UseZGC -XX:+ZGenerational -Xmx …
+----
+
+--
+
+[.notes]
+--
+Dynamic Generation Sizing:: _"Pretty tricky to get right" _
+Dynamic Tenuring Threshold:: Hard to get right. Autotuned based on bytes moved.
+Initiating Heap Occupancy:: Based on cost modelling
+Dynamic number of threads:: "Kommt nicht hinterher?" → Boosts GC threads to accommodate allocation spikes
+--
+
+
+
+
+[.columns]
+=== Generational ZGC: Performance
+
+[.column.is-half.left]
+--
+**Cassandra 4** Performancetests (128GB):
+
+* 4x GC Throughput 
+* 25% des ursprünglichen Memory 
+* weiter: unter <1ms Latenz!
+--
+
+[.column.is-half]
+image:zgc-performance.png[ZGC performance]
+
+//> […] an Apache Cassandra benchmark Generational ZGC requires a quarter of the heap size yet achieves four times the throughput compared to non-generational ZGC, while still keeping pause times under one millisecond. […] Some workloads are non-generational by nature and could see a slight performance degradation. 
+
+// .Shenandoah [preview]#Experimental# [jep]#https://openjdk.java.net/jeps/404[JEP 404]#
+// [source,bash]
+// ----
+// java -XX:+UnlockExperimentalVMOptions -XX:+UseShenandoahGC -XX:ShenandoahGCMode=generational
+// ----
+
+
+
+[.degrade]
+=== Stilberatung: Welcher GC ist der Richtige für mich?
+
+[.x-small,cols=">1s,^2,7e",grid="horizontal",frame="none"]
+|===
+|GC | Optimiert für… | Kommentar
+
+| G1
+| Balance
+| [decent]#Üblicher Default. Überwiegend Nebenläufig. Zielt auf Balance von Durchsatz & Latenz. Ausreißer-Pausen bis 250~800ms. Guter Durchsatz. Häppchenweise Pausen an Zeitbudget orientiert.#
+
+| ZGC
+| Latenz
+| [decent]#Low-latency Champion: Pausen unabhängig Live- und Root-Set.  +
+  Besser bei `WeakRef` & Auto-tuning als Shenandoah. Bereits Generational.#
+
+| Shenandoah
+| Latenz
+| [decent]#Generational in Arbeit. Auch verfügbar für JDK8, JDK11 und 32-bit. Red Hat.#
+
+| ParallelGC
+| Durchsatz
+| [decent]#Parallel & mehrere Threads: Wenn höchster Durchsatz gefragt ist. +
+  Typische Pausen ~300ms bis Sekunden, abhängig von Heap-Größe.#
+
+| SerialGC
+| Speicherbedarf
+| [decent]#Single-Threaded. Empfiehlt sich nur für Heaps bis ~100MB.#
+
+| Zing/Azul
+| Pauseless
+| [decent]#Nicht im OpenJDK; nur kommerziell verfügbar#
+|===
+
+[.refs]
+--
+https://docs.oracle.com/en/java/javase/21/gctuning/available-collectors.html
+--
+
+
+
+
+[.degrade.columns]
+=== Änderungen bei GC's im Überblick
+
+[column.x-small.left]
+--
+> G1 GC has also benefited from some new optimizations: full GCs have been optimized and the Hot Card Cache, which was proving to bring no benefit, has been removed, freeing up some native memory (0.2% of the heap size).
+https://tschatzl.github.io/2023/08/04/jdk21-g1-parallel-gc-changes.html
+
+.ZGC
+* **Generational ZGC**
+* ZGC Supports String Deduplication
+* Fixed Long Process Non-Strong References Times 
+
+.Multiple
+* Configurable Card Table Card Size 
+* Removal of Diagnostic Flag GCParallelVerificationEnabled
+* Add missing gc+phases logging for ObjectCount(AfterGC) JFR event collection code
+
+.Legacy
+* SerialGC String Deduplication 
+* ParallelGC String Deduplication
+--
+[column.x-small.left]
+--
+.G1
+* Allow G1 Heap Regions up to 512MB 
+* Obsoleted Product Options -XX:G1RSetRegionEntries and -XX:G1RSetSparseRegionEntries 
+* G1 remembered set memory footprint regression
+* Add GarbageCollectorMXBean for Remark and Cleanup Pause Time
+* Improved Control of G1 Concurrent Refinement Threads
+* Disable Preventive GCs by Default
+* Last Resort G1 Full GC Moves Humongous Objects
+
+[.tgap.center]
+icon:exclamation-triangle[] Many, many, more…
+--
+
+[.notes]
+--
+. lorem
+--
+
+=== TL;DR: Tipps für den GC
+
+[%step.statement.tgap]
+icon:level-up-alt[] Upgrade lohnt sich!
+
+[%step.statement]
+icon:stopwatch[] Latenz wichtig? → ZGC
+
+[%step.statement]
+icon:graduation-cap[] „Probieren geht über Studieren!“
+
+[%step.statement]
+icon:trash-alt[] Mut zum Loslassen: GC-Parameter
+
+
+
+
+
+
+[.degrade]
+== Exkurs: Preview features [preview]#Preview# [jep]#https://openjdk.java.net/jeps/12[JEP 12]#
+… sind neue **Sprach–, JVM– oder API-Features**, die bereits **[underline]#vollständig# spezifiziert und implementiert** sind, aber durch Community Feedback aus dem _„echten Leben“ zusätzlich validiert werden sollen. +
+[.decent.x-small]#_z.B.: Pattern Matching, Switch Expression, Text Blocks, Records, Sealed Classes_#
+
+[.col2]
+--
+[source,shell]
+.Unlock Compilation
+----
+$ javac --enable-preview …
+----
+--
+[.col2]
+--
+[source,shell]
+.Unlock Execution
+----
+$ java --enable-preview …
+----
+--
+[.clear]
+--
+{sp} +
+[.step.emphasize]#Keine Cross-compilation mittels `--release xx` möglich!#
+--
+[.notes]
+--
+* Forces awareness by using toggle switch on _compiling and running_
+* Typisch mehrere Iterationen (z.B. `switch`-Statement)
+* Stabilisierung auf LTS; in 17 LTS daher kein Preview Feature
+--
+
+
+
+[.lightbg.forcetop,background-video= "pexels-cottonbro-7319201.mp4",options="loop,muted",background-opacity="1"]
+== Foreign Function & Memory API [preview]#Preview# 
+//[jep]#https://openjdk.java.net/jeps/442[JEP 442]#
+
+
+=== FFM: History
+
+[.x-small]
+[cols="^2,^1,>2,4",width="70%"]
+|===
+| JEP | JDK | Status | Titel
+
+| [jepinline]#https://openjdk.org/jeps/370[JEP 370]# | [versioninline]#14# | [previewinline]#Incubator# | Foreign-Memory Access API
+| [jepinline]#https://openjdk.org/jeps/383[JEP 383]# | [versioninline]#15# | [previewinline]#2. Incubator# | Foreign-Memory Access API
+| [jepinline]#https://openjdk.org/jeps/393[JEP 393]# | [versioninline]#16# | [previewinline]#3. Incubator# | Foreign-Memory Access API
+| [jepinline]#https://openjdk.org/jeps/389[JEP 389]# | [versioninline]#16# | [previewinline]#Incubator# | Foreign Linker API
+4+|
+| [jepinline]#https://openjdk.org/jeps/412[JEP 412]# | [versioninline]#17# | [previewinline]#Incubator# | Foreign Function & Memory API
+4+|
+| [jepinline]#https://openjdk.org/jeps/419[JEP 419]# | [versioninline]#18# | [previewinline]#2. Incubator# | Foreign Function & Memory API
+| [jepinline]#https://openjdk.org/jeps/424[JEP 424]# | [versioninline]#19# | [previewinline]#Preview# | Foreign Function & Memory API
+| [jepinline]#https://openjdk.org/jeps/434[JEP 434]# | [versioninline]#20# | [previewinline]#2. Preview# | Foreign Function & Memory API
+4+|
+| [jepinline]#https://openjdk.org/jeps/442[JEP 442]# | [versioninline]#21# | [previewinline]#3. Preview# | Foreign Function & Memory API
+|=== 
+
+[.notes]
+--
+.Historie:
+* Zwei JEPs / APIs: Memory Access API & Foreign Linker API
+* erstmals JDK14, dann 15, 16 und zusammengeführt in 17
+* Nun seit JDK 17 aus Incubator-Status raus, inzwischen 3.te Preview
+
+.Was ist neu seit JDK17?
+
+Viel Detailpflege
+
+* A new API to copy Java arrays to and from memory segments.
+* A more general dereference API
+* A simpler API to obtain method handles & manage temporal dependencies 
+* Enhancemtns to facilitate usage with pattern matching 
+* Optimize calls to  short-lived functions
+* uvm.
+--
+
+
+
+
+[.degrade]
+=== Retro: Java Native Interface (JNI)
+
+[.plain]
+image::jni-process.png[Java Native Interface Process, 1000, float="left"]
+
+[.small]
+--
+* 26 Jahre alt
+* erfordert `.c` & `.h`-Files
+* mehrstufiger Prozess: +
+  kleinteilig & brüchig
+
+↓
+
+sehr verworren
+
+--
+[.notes]
+--
+bildquelle: https://developers.redhat.com/blog/2016/11/03/eclipse-for-jni-development-and-debugging-on-linux-java-and-c#general_overview_of_jni_compilation_and_the_eclipse_project
+--
+
+
+
+
+=== Motivation Project Panama [preview]#Preview# [jep]#https://openjdk.java.net/jeps/442[JEP 442]#
+
+Starke Drittbibliotheken (z.B. ML, GPU, …) mit dynamischer Entwicklung +
+[decent]#_Tensorflow, CUDA, OpenGL, OpenSSL, fuse, libsodium, …_#
+
+[.x-small.fragment.tgap]
+> Introduce an API by which Java programs can interoperate with code and
+data outside of the Java runtime […] without the brittleness and danger of JNI.
+
+[.fragment.tgap]
+**Ziele:** _Einfachheit – Performance – Allgemeingültigkeit – Sicherheit_
+
+//  https://www.youtube.com/watch?v=B8k9QGvPxC0
+[.notes]
+--
+* Motivation: ML → Python Ecosystem → vs. re-implementing
+
+.Ziele
+* Einfachheit → nur Java → hofft auf Tooling
+* Performance: Vergleichbare, wenn nicht sogar besser als mit JNI
+* Umschiffen alter Scrhanken wie max 2GB mit ByteBuffer max. 2GB und foreign Memory GC-manages.
+* Allgemeingültigkeit: 
+* Sicherheit:  Abkommen von `sun.misc.Unsafe`;
+
+
+--
+
+
+[.degrade.compactlist%auto-animate]
+=== Einfacher Funktionsaufruf
+
+[source,java,data-id=planets]
+----
+import java.lang.foreign.*;
+
+class CallPid {
+  public static void main(String... p) throws Throwable {
+    var lookup = Linker.nativeLinker().defaultLookup();                    <1>
+    var libSymbol = lookup.find("getpid").orElseThrow();                   <2>
+    var nativeSig = FunctionDescriptor.of(ValueLayout.JAVA_LONG);          <3>
+
+    Linker cABI = Linker.nativeLinker();
+    var getpid = cABI.downcallHandle(libSymbol, nativeSig);                <4>
+
+    System.out.println((long) getpid.invokeExact());                       <5>
+  }
+}
+----
+<1> Lookup für Standard-Symbole
+<2> adressiertes _Symbol_ – hier via Lookup in den System Libraries
+<3> gewünschte _Java-Signatur_ des Java Foreign Handles
+<4> Funktionshandle beziehen
+<5> Native Funktion aufrufen
+
+
+[.degrade%auto-animate]
+=== … das Gleiche zu Zeiten von JDK 17
+
+[source,java,data-id=planets]
+----
+import java.lang.invoke.*;
+import jdk.incubator.foreign.*;
+
+class CallPid {
+  public static void main(String... p) throws Throwable {
+    var libSymbol = CLinker.systemLookup().lookup("getpid").orElseThrow();
+    var javaSig = MethodType.methodType(long.class);                       <1>
+    var nativeSig = FunctionDescriptor.of(CLinker.C_LONG);
+
+    CLinker cABI = CLinker.getInstance();
+    var getpid = cABI.downcallHandle(libSymbol, javaSig, nativeSig);       <2>
+
+    System.out.println((long) getpid.invokeExact());
+  }
+}
+----
+<1> Zusätzlich: Definition gewünschter _Java-Signatur_ des Java Foreign Handles
+<2> …und Verwendung dergleichen
+
+[.degrade%auto-animate]
+=== Komplexeres Beispiel mit Off-Heap Memory
+[source,c]
+----
+int radixsort(const	unsigned char **base,	int	nmemb,
+              const unsigned char *table, unsigned endbyte);
+----
+[.decent.xx-small]#…sortiert `nmemb` Strings die jeweils mit `endbyte` terminiert sind: Der erste String bei `base`# +
+[.fragment]
+--
+↓
+[source,java,data-id=planets,highlight="4.."]
+----
+var linker = Linker.nativeLinker();
+var stdlib = linker.defaultLookup();
+
+var funcDesc = FunctionDescriptor.ofVoid(
+        ADDRESS, JAVA_INT, 
+        ADDRESS, JAVA_CHAR);
+
+MethodHandle radixsort = linker.downcallHandle(
+        stdlib.find("radixsort").orElseThrow(),                            <1>
+        funcDesc);
+----
+<1> Handle für die native C-Funktion beziehen
+--
+[.notes]
+--
+As a brief example of using the FFM API, here is Java code that obtains a method handle for a C library function radixsort and then uses it to sort four strings which start life in a Java array.
+--
+
+
+
+[.degrade.small.compactlist%auto-animate]
+=== …was möchten wir erreichen?…
+[source,java,data-id=planets]
+----
+String[] javaStrings = {"mouse", "cat", "dog", "car"};
+String[] sorted = {"car", "cat", "dog", "mouse"};
+int strCount = javaStrings.length;
+
+{
+  // 1. Übergabe der Java Strings Tabelle in nativen Speicher
+
+  // 2. Sortieren dergleichen mittels `radixsort` C-Funktion
+
+  // 3. Ergebnis auf den Java-Heap
+}
+
+assert Arrays.equals(javaStrings, sorted); 
+----
+
+
+[.degrade.small.compactlist%auto-animate]
+=== …das ganze _live und in Farbe_!
+[source,java,data-id=planets]
+----
+try (Arena offHeap = Arena.ofConfined()) {                                 <1>
+    MemorySegment pointers = offHeap.allocateArray(ADDRESS, strCount);     <2>
+
+    for (int i = 0; i < strCount; i++) {                                   <3>
+        MemorySegment cString = offHeap.allocateUtf8String(javaStrings[i]);
+        pointers.setAtIndex(ADDRESS, i, cString);
+    }
+    
+    radixsort.invoke(pointers, strCount, MemorySegment.NULL, '\0');        <4>   
+
+    for (int i = 0; i < strCount; i++) {
+        MemorySegment cString = pointers.getAtIndex(ADDRESS, i);
+        cString = cString.reinterpret(Long.MAX_VALUE);                     <5>
+        javaStrings[i] = cString.getUtf8String(0);
+    }
+}
+----
+<1> `try`-with-_Arena_ steuert allen Off-Heap Speicher und gibt diesen später wieder frei.
+<2> Off-heap MemoryPointer-Tabelle reservieren
+<3> Java Strings in den Off-Heap kopieren und ihre Pointers in Tabelle einsetzen
+<4> Aufruf der `radixsort` C-Funktion zum sortieren der Pointer
+<5> Aktualisiere Größe des erhaltenen `MemorySegment` von `0` auf `Long.MAX_VALUE`
+
+[.notes]
+--
+* Erläutere Schritt #1...6
+* Das ganze deutlich gewandelt von FFM aus JDK17.
+** Das werden wir gleich auch noch einmal im Demo des Tool sehen, dass ich noch mit jDK17 aufgezeichnet habe
+--
+
+
+=== Helferlein `jextract`
+Generiert aus direkt aus **`.h`**-Dateien passende _API Wrapper_ +
+als **`.class`** oder **`.java`** mit den notwendigen Foreign API-Aufrufen. +
+[.decent.xx-small]#Nicht direkt in JDK 21 enthalten, sondern via Panama EAP Builds (s.u.).#
+
+
+[source.fragment,shell]
+----
+$ jextract -t de.bentolor /usr/include/unistd.h
+----
+
+[source.fragment,java]
+----
+import de.bentolor.unistd_h;
+
+class CallPid {
+   public static void main(String[] args) {
+      System.out.println( unistd_h.getpid() );
+  }
+}
+----
+
+
+[.notes]
+--
+* Nicht Teil des JDK, separater Download
+* Erzeugt / Generiert den Boiler Code
+* Da große 89MB _LLVM_ Dependency, vermutlich nie JDK Bestandteil
+--
+
+[.refs]
+--
+https://jdk.java.net/jextract/[jextract EAP builds] +
+https://github.com/openjdk/jextract[Project Panama jextract]
+--
+
+
+[%notitle,background-video="native-python-fast.mp4",background-size="contain"]
+=== `jextract` Demo
+
+// === `jextract` Demo (Transcript)
+
+// [source.col2.x-small,bash]
+// ----
+// mkdir hello-python
+// cd hello-python
+
+// locate Python.h
+
+// jextract -t de.bentolor \
+//          -l python3.8 \
+//          -I /usr/include/python3.8/ \
+//          -I /usr/include/ \
+//          /usr/include/python3.8/Python.h
+
+// joe Schlange.java
+
+// java --add-modules jdk.incubator.foreign \
+//      --enable-native-access=ALL-UNNAMED \
+//      -Djava.library.path=/usr/lib/x86_64-linux-gnu/ \
+//      Schlange.java
+
+// jextract -t de.bentolor \
+//          -l python3.8 \
+//          -I /usr/include/python3.8/ \
+//          -I /usr/include/ \
+//          --source
+//          /usr/include/python3.8/Python.h
+
+// bat de/bentolor/Python_h.java
+
+// bat de/bentolor/Python_h_4.java
+// /s int PyRun_S
+// ----
+
+// [source.col2.x-small,java]
+// ----
+// import jdk.incubator.foreign.*;
+// import de.bentolor.Python_h;
+
+// public class Schlange {
+//   public static void main(String[] args) {
+//     String script = """
+//             print(sum([33, 55, 66]));
+//             print('Hello Python 3!')
+//             """;
+
+//     Python_h.Py_Initialize();
+//     try (var scope = ResourceScope.newConfinedScope()) {
+//         var str = CLinker.toCString(script, scope);
+//         Python_h.PyRun_SimpleStringFlags(
+//               str, MemoryAddress.NULL);
+//         Python_h.Py_Finalize();
+//     }
+//   }
+// }
+// ----
+
+// import de.bentolor.unistd_h;
+
+// class CallPid {
+//    public static void main(String[] args) {
+//       System.out.println( unistd_h.getpid() );
+//       System.out.println( ProcessHandle.current().pid() );
+//   }
+// }
+
+
+
+[%notitle]
+=== `jextract` Verwendungsbeispiele
+image::jextract-examples.png[https://github.com/openjdk/jextract/tree/master/samples,height=640]
+https://github.com/openjdk/jextract/tree/master/samples
+[.notes]
+--
+Viele Beispiele verfügbar
+--
+
+
+
+
+
+[.degrade]
+== Exkurs: Incubator Modules [preview]#Incubator# [jep]#https://openjdk.java.net/jeps/11[JEP 11]#
+sind _[underline]#experimentelle#_ **APIs und Tools** [.decent]#(nicht: JVM/Sprache)#, +
+welche für Experimente und Feedback bereitgestellt werden. +
+
+[source.tgap,bash]
+----
+javac --add-modules jdk.incubator.foo …
+java  --add-modules jdk.incubator.foo …
+----
+
+[.decent]#_z.B.: ex: HTTP/2 Client, Packaging Tool, Scoped Values, …_#
+aktuell: Vector API
+
+{sp} +
+[.emphasize.fragment]#Dabei gilt: _„Alles im Fluß!“_#
+
+[.notes]
+--
+Vieles über Incubator gereift. Manches über viele Iterationen
+* Vector: Aktuell 6. Incubator
+* FFM: Auch 6 Incubators
+
+Anderes: Direkt in GA, z.B.
+* Scoped Values: 1. Incubator (v20) → 1. Preview (v21)
+--
+
+
+
+
+[.lightbg,background-video="pexels-pressmaster--3141210-geometric-symetric.mp4",options="loop,muted",background-opacity="1"]
+== Vector API [preview]#Incubator#
+
+
+=== Das Vektor-API [preview]#Incubator# [jep]#https://openjdk.java.net/jeps/448[JEP 448]#
+
+> Introduce an API to express **vector computations** that reliably compile at runtime to optimal vector instructions on supported CPU architectures, thus achieving performance superior to equivalent scalar computations.
+
+[.fragment.xx-large.emphasize]
+--
+↓ +
+*???*
+--
+
+//> The Vector API will make it possible to perform mathematical vector operations efficiently. A vector operation is, for example, a vector addition, as you may remember from math classes: image::https://www.happycoders.eu/wp-content/uploads/2021/12/java-vector-addition-400x91.png[]
+// > Modern CPUs can perform such operations up to a particular vector size in a single CPU cycle. The vector API will enable the JVM to map such operations to the most efficient instructions of the underlying CPU architecture.
+// > A sixth incubator of a vector API. This API expresses vector computations that reliably compile to optimal vector instructions on supported CPU architectures, achieving performance superior to equivalent scalar computations. […] ]Goals of the proposal include being clear and concise, being platform agnostic, and offering reliable runtime compilation and performance on x64 and AArch64 architectures. Other goals include graceful degradation when a vector computation cannot be fully expressed as a sequence of vector instructions.
+
+[.degrade]
+=== _Vektor_-was? → Vektor-_Rechnung!_
+image::vector-calculation.png[Vector calcuation example,900]
+
+
+
+
+[.columns]
+=== Das Vektor API im Portrait
+
+[.column.is-half.small]
+--
+.Motivation
+* SIMD [.decent]#(Single Instruction Multiple Data)#-Features aktueller CPUs [.decent]#(SSE, AVX, 3DNow, AArch64: Neon)#.
+* → **Performance** & [.decent]#(Energie-)# **Effizienz**
+
+.Anwendungsfälle
+* Bild-, Signal- und Textverarbeitung
+* Machine Learning
+* Verschlüsselung
+* _Banales:_ Array-Vergleich, Zeichensatz- konvertierungen, …
+--
+
+[.column.is-half.small]
+--
+.Ziele
+* Klare & prägnante API
+* Plattform-agnostisch
+* Zuverlässig auf _x64_ und _AArch64_
+* „Graceful degradation“
+* Abgestimmt mit _Valhalla_  +
+  [.decent]#(value-based classes)#
+--
+[.notes]
+--
+Clear and concise API — The API should be capable of clearly and concisely expressing a wide range of vector computations consisting of sequences of vector operations composed within loops and possibly with control flow. It should be possible to express a computation that is generic with respect to vector size, or the number of lanes per vector, thus enabling such computations to be portable across hardware supporting different vector sizes.
+
+Platform agnostic — The API should be CPU architecture agnostic, enabling implementations on multiple architectures supporting vector instructions. As is usual in Java APIs, where platform optimization and portability conflict then we will bias toward making the API portable, even if that results in some platform-specific idioms not being expressible in portable code.
+
+Reliable runtime compilation and performance on x64 and AArch64 architectures — On capable x64 architectures the Java runtime, specifically the HotSpot C2 compiler, should compile vector operations to corresponding efficient and performant vector instructions, such as those supported by Streaming SIMD Extensions (SSE) and Advanced Vector Extensions (AVX). Developers should have confidence that the vector operations they express will reliably map closely to relevant vector instructions. On capable ARM AArch64 architectures C2 will, similarly, compile vector operations to the vector instructions supported by NEON and SVE.
+
+Graceful degradation — Sometimes a vector computation cannot be fully expressed at runtime as a sequence of vector instructions, perhaps because the architecture does not support some of the required instructions. In such cases the Vector API implementation should degrade gracefully and still function. This may involve issuing warnings if a vector computation cannot be efficiently compiled to vector instructions. On platforms without vectors, graceful degradation will yield code competitive with manually-unrolled loops, where the unroll factor is the number of lanes in the selected vector.
+
+Alignment with Project Valhalla — The long-term goal of the Vector API is to leverage Project Valhalla's enhancements to the Java object model. Primarily this will mean changing the Vector API's current value-based classes to be value classes so that programs can work with value objects, i.e., class instances that lack object identity. Accordingly, the Vector API will incubate over multiple releases until the necessary features of Project Valhalla become available as preview features. Once these Valhalla features are available we will adapt the Vector API and implementation to use them and then promote the Vector API itself to a preview feature. For further details, see the sections on run-time compilation and future work.
+--
+
+
+
+
+=== Vector API: History
+[.x-small]
+[cols="^2,^1,>2,4",width="70%"]
+|===
+| JEP | JDK | Status | Titel
+
+| [jepinline]#https://openjdk.org/jeps/338[JEP 338]# | [versioninline]#16# | [previewinline]#Incubator# | Vector API
+4+|
+| [jepinline]#https://openjdk.org/jeps/414[JEP 414]# | [versioninline]#17# | [previewinline]#2. Incubator# | Vector API
+4+|
+| [jepinline]#https://openjdk.org/jeps/417[JEP 417]# | [versioninline]#18# | [previewinline]#3. Incubator# | Vector API
+| [jepinline]#https://openjdk.org/jeps/426[JEP 426]# | [versioninline]#19# | [previewinline]#4. Incubator# | Vector API
+| [jepinline]#https://openjdk.org/jeps/438[JEP 438]# | [versioninline]#20# | [previewinline]#5. Incubator# | Vector API
+4+|
+| [jepinline]#https://openjdk.org/jeps/448[JEP 448]# | [versioninline]#21# | [previewinline]#6. Incubator# | Vector API
+|=== 
+
+[.notes]
+--
+.Historie:
+* Zwei JEPs / APIs: Memory Access API & Foreign Linker API
+* erstmals JDK14, dann 15, 16 und zusammengeführt in 17
+* Nun seit JDK 17 aus Incubator-Status raus, inzwischen 3.te Preview
+
+.Was ist neu seit JDK17?
+
+Viel Detailpflege
+
+* A new API to copy Java arrays to and from memory segments.
+* A more general dereference API
+* A simpler API to obtain method handles & manage temporal dependencies 
+* Enhancemtns to facilitate usage with pattern matching 
+* Optimize calls to  short-lived functions
+* uvm.
+--
+
+
+
+[.columns]
+=== Vector API: Begriffe
+
+[.column.x-small]
+--
+_Type_ [.decent]#(Elemente)#:: `Byte`, `Short`, `Integer`, `Long` und  +
+`Float` & `Double` sowie ihre Primitiven
+_Shape_:: unterstütze Vektorgrößen von `64`, `128`, `256` und `512` Bits sowie `max` Bits.
+_Species_:: _Shape_ & _Type_ -> Elemente pro Vektor
+Operations:: _lane-wise_ oder +
+_cross-lane_ [.decent]#(Sortieren, Betrag, Sum, Avg, …)#
+--
+[.column.x-small]
+--
+image::vector-terms.png[Vector API Terms,900] 
+--
+[.notes]
+--
+cross-lane:: Sorting; Reducing (Vektor Normal, Sum,Avg, ..)
+--
+
+
+[%auto-animate]
+=== Vektoren addieren… „Klassisch“
+[source,java,highlight=5..,data-id=code]
+----
+int[] a1 = {2, 49, -12, 3, 11, 32, 11, 455, 0, 283};
+int[] a2 = {0, -3, 185, 221, 76, 2, -2, 0, 0, 0};
+int[] aResult = new int[a1.length];
+
+for (int i = 0; i < a1.length; i++) {
+    aResult[i] = a1[i] + a2[i];
+}
+
+System.out.println(aResult[1] == 46 ? "Yep!" : "Duh!");
+----
+[.fragment]
+`Yep!`
+
+
+[%auto-animate]
+=== Mittels Vector API
+[source,java,highlight=4..8,data-id=code]
+----
+int[] vResult = new int[a1.length];
+var species = IntVector.SPECIES_256;
+
+var v1 = IntVector.fromArray(species, a1, 0);
+var v2 = IntVector.fromArray(species, a2, 0);
+
+var result = v1.add(v2);
+result.intoArray(vResult, 0);
+
+System.out.println(Arrays.equals(aResult, vResult) ? "Yep!" : "Duh!");
+----
+[.fragment.emphasize]
+`Duh!`
+
+
+[%auto-animate]
+=== … definiert die „Species“ die Anzahl der Elemente!
+[source,java,highlight=1..2,data-id=code]
+----
+int[] a1 = {2, 49, -12, 3, 11, 32, 11, 455, /* | */  0, 283};
+int[] a2 = {0, -3, 185, 221, 76, 2, -2, 0,  /* | */  0, 0};
+int[] vResult = new int[a1.length];
+var species = IntVector.SPECIES_256;
+
+var v1 = IntVector.fromArray(species, a1, 0);
+var v2 = IntVector.fromArray(species, a2, 0);
+
+var result = v1.add(v2);
+result.intoArray(vResult, 0);
+
+System.out.println(Arrays.equals(aResult, vResult) ? "Yep!" : "Duh!");
+----
+[.emphasize]
+`Duh!`
+
+
+[%auto-animate]
+=== …darum „Slicing“ erforderlich …
+[source,java,highlight=6..12,data-id=code]
+----
+int[] a1 = {2, 49, -12, 3, 11, 32, 11, 455, /* | */  0, 283};
+int[] a2 = {0, -3, 185, 221, 76, 2, -2, 0,  /* | */  0, 0};
+int[] vResult = new int[a1.length];
+var species = IntVector.SPECIES_256;
+
+for (int i = 0; i < a1.length; i += species.length()) {
+
+    var v1 = IntVector.fromArray(species, a1, i);
+    var v2 = IntVector.fromArray(species, a2, i);
+    var result = v1.add(v2);
+    result.intoArray(vResult, i);
+}
+
+System.out.println(Arrays.equals(aResult, vResult) ? "Yep!" : "Duh!");
+----
+
+
+[%auto-animate]
+=== …aber auch „Masking“…
+[source,java,highlight=7,data-id=code]
+----
+int[] a1 = {2, 49, -12, 3, 11, 32, 11, 455, /* | */  0, 283};
+int[] a2 = {0, -3, 185, 221, 76, 2, -2, 0,  /* | */  0, 0};
+int[] vResult = new int[a1.length];
+var species = IntVector.SPECIES_256;
+
+for (int i = 0; i < a1.length; i += species.length()) {
+    var mask = species.indexInRange(i, a1.length);
+    var v1 = IntVector.fromArray(species, a1, i, mask);
+    var v2 = IntVector.fromArray(species, a2, i, mask);
+    var result = v1.add(v2, mask);
+    result.intoArray(vResult, i, mask);
+}
+
+System.out.println(Arrays.equals(aResult, vResult) ? "Yep!" : "Duh!");
+----
+
+
+[%auto-animate]
+=== … um den „Verschnitt“ zu managen!
+[source,java,highlight=8..11,data-id=code]
+----
+int[] a1 = {2, 49, -12, 3, 11, 32, 11, 455, /* | */  0, 283};
+int[] a2 = {0, -3, 185, 221, 76, 2, -2, 0,  /* | */  0, 0};
+int[] vResult = new int[a1.length];
+var species = IntVector.SPECIES_256;
+
+for (int i = 0; i < a1.length; i += species.length()) {
+    var mask = species.indexInRange(i, a1.length);
+    var v1 = IntVector.fromArray(species, a1, i, mask);
+    var v2 = IntVector.fromArray(species, a2, i, mask);
+    var result = v1.add(v2, mask);
+    result.intoArray(vResult, i, mask);
+}
+
+System.out.println(Arrays.equals(aResult, vResult) ? "Yep!" : "Duh!");
+----
+[.fragment]
+`Yep!`
+
+
+
+[%auto-animate]
+=== „Species“ sind Plattform-spezifisch!
+[source,java,highlight=4,data-id=code]
+----
+int[] a1 = {2, 49, -12, 3, 11, 32, 11, 455, /* | */  0, 283};
+int[] a2 = {0, -3, 185, 221, 76, 2, -2, 0,  /* | */  0, 0};
+int[] vResult = new int[a1.length];
+var species = IntVector.SPECIES_PREFERRED;
+
+for (int i = 0; i < a1.length; i += species.length()) {
+    var mask = species.indexInRange(i, a1.length);
+    var v1 = IntVector.fromArray(species, a1, i, mask);
+    var v2 = IntVector.fromArray(species, a2, i, mask);
+    var result = v1.add(v2, mask);
+    result.intoArray(vResult, i, mask);
+}
+
+System.out.println(Arrays.equals(aResult, vResult) ? "Yep!" : "Duh!");
+----
+
+[.fragment]
+Pitfall: Das _Masking_ wird nicht von allen CPUs unterstüzt!
+
+
+
+=== Cross-Lane Beispiel
+[.fragment.emphasize]
+**|v⃗|= _sqrt_ ( v~1~^2^ + v~2~^2^ + v~3~^2^ + … )**
+
+[source.fragment,java,highlight="4,8,9,11"]
+----
+int[] a1 = {2, 49, -12, 3, 11, 32, 11, 455, 0, 283};
+var species = IntVector.SPECIES_PREFERRED;
+
+double sqrSums = 0d;
+for (int i = 0; i < a1.length; i += species.length()) {
+    var mask = species.indexInRange(i, a1.length);
+    var v1 = IntVector.fromArray(species, a1, i, mask);
+    var v2 = v1.mul(v1, mask);
+    sqrSums += v2.reduceLanes(VectorOperators.ADD, mask);
+}
+double vBetrag = Math.sqrt(sqrSums);
+----
+[.fragment.decent]
+Auch das aufaddieren der Quadrate könnte man wunderbar per Vector-API abbilden!
+
+
+[.degrade]
+=== Performance: _„Your mileage may vary!“_
+[.plain]
+image::EqualsIgnoreCaseBenchmark.png[EqualsIgnoreCase Benchmark,1000]
+
+[.small.decent]
+{sp} +
+Starke Abhängigkeit der verfügbaren CPU-Features (z.B. Masking), verfügbaren _Shapes_ und CPU Performance.
+
+
+[.degrade.x-small]
+=== Vector API: Beispiele & Benchmarks
+image:vector-benchmarks.png[Vector API Sample Benchmarks]  +
+https://github.com/openjdk/jdk/tree/master/test/micro/org/openjdk/bench/jdk/incubator/vector
+
+
+
+
+
+
+[.lightbg,background-video="hammer.mp4",background-video-loop="true",background-opacity="0.8"]
+== Tooling
+
+[%auto-animate,data-id=animatedtitle]
+=== Es ist nicht einfach, ein Java-Anfänger zu sein…
+
+
+[%auto-animate,data-id=animatedtitle]
+=== Es ist nicht einfach, ein Java-Anfänger zu sein…
+
+[source%linenums.tgap,java,data-id=animatedcode]
+----
+public class ClassicHello {
+    String greeting() { return "Hello, World!"; }
+
+    public static void main(String[] args) { 
+        System.out.println(new ClassicHello().greeting());
+    }
+}
+----
+[.notes]
+--
+>  "evolve the Java language so that students can write their first programs without needing to understand language features designed for large programs."
+
+*  led by Brian Goetz: Lower initial challenges to newcomers vs.
+** Claim: Concept overload: `public` + `class` +_Methods_ + `public` (again) + `static` + `String[]` + `System.out.println`
+--
+
+[%auto-animate,data-id=animatedtitle]
+=== …aber bald wird es einfacher sein!
+
+[source%linenums.tgap,java,data-id=animatedcode]
+----
+String greeting() { return "Hello, World!"; }
+
+void main() {
+    System.out.println(greeting());
+}
+----
+
+
+
+
+[%auto-animate.columns]
+=== Unnamed Classes and Instance Main Methods [jep]#https://openjdk.java.net/jeps/445[JEP 445]# [preview]#Preview#
+
+[.column]
+--
+[source,java,data-id=animatedcode]
+----
+String greeting() { return "Hello, World!"; }
+
+void main() {
+    System.out.println(greeting());
+}
+----
+
+[source,shell]
+----
+$ javac --enable-preview --release 21 Hello.java
+$ java  --enable-preview              Hello
+----
+--
+
+[.column.is-one-third]
+--
+{sp} +
+
+1. `main()`-Methoden +
+   auf _Instanzen_
+2. _unnamed classes_
+--
+
+
+[.notes]
+--
+https://openjdk.org/projects/amber/design-notes/on-ramp
+--
+
+[%auto-animate%auto-animate-restart]
+=== Simple Web Server [jep]#https://openjdk.java.net/jeps/408[JEP 408]#
+[source,shell,data-id="code"]
+----
+$ java -m jdk.httpserver -p 4444 -d /tmp -o verbose
+Binding an Loopback als Standard. Verwenden Sie für alle Schnittstellen …
+Bedient /tmp und Unterverzeichnisse auf 127.0.0.1 Port 4444
+URL http://127.0.0.1:4444/
+----
+Unterstützt _nur_ HTTP/1.1, kein HTTPS und nur `GET` und `HEAD`.
+
+[%auto-animate]
+=== Simple Web Server [jep]#https://openjdk.java.net/jeps/408[JEP 408]#
+[source,shell,data-id="code"]
+----
+$ jwebserver             -p 4444 -d /tmp -o verbose
+Binding an Loopback als Standard. Verwenden Sie für alle Schnittstellen …
+Bedient /tmp und Unterverzeichnisse auf 127.0.0.1 Port 4444
+URL http://127.0.0.1:4444/
+----
+Als Convenience bietet das JDK das Wrapper-Script `jwebserver` an
+
+[%auto-animate]
+=== Simple Web Server [jep]#https://openjdk.java.net/jeps/408[JEP 408]#
+[source,java,data-id="code"]
+----
+public static void main(String[] args) {
+    HttpServer server = SimpleFileServer.createFileServer(
+            new InetSocketAddress(4444), 
+            Path.of("/tmp"), 
+            SimpleFileServer.OutputLevel.VERBOSE);
+    server.start();
+}
+----
+…auch programmatische Verwendung möglich.
+
+
+[.columns.left.small]
+=== `javadoc` Code Snippets [jep]#https://openjdk.java.net/jeps/413[JEP 413]#
+[.column]
+--
+.Neues `{@snippet : … }` tag 
+* Inhalte _inline_ oder über _externe Dateien_
+* Unterstützt verschiedene Snippet-Sprachen
+
+[source.small,none,highlight="3,4,7,10,12"]
+----
+/**
+ * Der Evergreen im Portrait.
+ * {@snippet :
+ * // @highlight region substring="Hello"
+ * class HelloWorld { 
+ *   public static void main(String... args) {
+ * // @link regex="Sy.+m" target="java.lang.System" :
+ *      System.out.println("Hello World!");    
+ *   }
+ * // @end
+ * }
+ * }
+ */
+----
+--
+
+[.column.fragment]
+--
+.Unterstützte Markup Tags:
+* `@start` & `@end` _Regions_ für referenzierbare Ausschnitte
+* `@highlight`-ing anhand  RegEx, Regions oder Text
+* `@replace` für Textersetzungen
+* `@link` ermöglicht Verlinkungen
+
+[.xx-small.decent.fragment]#Markup-_Tags_ haben die Form `@name` gefolgt von _Argumenten_ der Form `param="wert"` und sind als _Kommentare_ in der Sprache des Snippets verfasst. Mit `:` wirken sie auf die Folgezeile.#
+--
+
+
+
+// [.columns.left.small]
+// === `javadoc` Code Snippets [jep]#https://openjdk.java.net/jeps/413[JEP 413]#
+// [.column]
+// --
+// .Neues `{@snippet : … }` tag 
+// * Inhalte _inline_ oder über _externe Dateien_
+// * Unterstützt verschiedene Snippet-Sprachen
+
+// image:javadoc-result.png[Javadoc result, 1200]
+// --
+
+// [.column]
+// --
+// .Unterstützte Markup Tags:
+// * `@start` & `@end` _Regions_ für referenzierbare Ausschnitte
+// * `@highlight`-ing anhand  RegEx, Regions oder Text
+// * `@replace` für Textersetzungen
+// * `@link` ermöglicht Verlinkungen
+
+// [.xx-small.decent]#Markup-_Tags_ haben die Form `@name` gefolgt von _Argumenten_ der Form `param="wert"` und sind als _Kommentare_ in der Sprache des Snippets verfasst. Mit `:` wirken sie auf die Folgezeile.#
+// --
+
+[.degrade]
+=== Javadoc Code Snippets: Tags & Argumente
+[.x-small,cols=">1s,3e",width=70%,frame="none",lines="horizontal"]
+|===
+| Tag | Arguments
+
+| `@snippet` | `class`,  [.fragment.highlight-current-red]#`file`#, `id`, [.fragment.highlight-current-red]#`lang`#, `region`
+| `@start`    | `region`
+| `@end`      | `region`
+| `@highlight` | `substring`, `regex`, `region`, `type`
+| `@replace` | `substring`, `regex`, `region`, `replacement`
+| `@link`| `substring`, `regex`, `region`, `target`, `type`
+|===
+
+
+
+
+
+[.columns]
+=== Mehr Javadoc Verbesserungen
+
+[.column.is-two-thirds.left]
+--
+* **Custom Javascript** integrieren via `--add-script interact.js`
+* Neue `--link-modularity-mismatch` warning
+* Layoutverbesserung für **Handys**
+* _Preview API_ Seite erlaubt toggling
+* _New_ gibt Überblick
+
+--
+[.column]
+--
+video::javadoc.webm[Javadoc feature demo,width=426]
+--
+
+
+//=== `jshell` Highlighting
+//`jshell` higlighted nun Code sowie Deprecated usage.
+
+
+
+[.lightbg,background-video= "pexels-pavel-danilyuk-6158064.mp4",options="loop,muted",background-opacity="0.7"]
+== Details & Maintenance
+
+[%auto-animate]
+=== UTF-8 als Standardkodierung der Java API [jep]#https://openjdk.java.net/jeps/400[JEP 400]#
+Der _default charset_ kommt in der Java API z.B. bei `FileReader/Writer`, `InputStreamReader`, `Formatter` `Scanner`, u.a. zum Einsatz.
+
+[.fragment.tgap]
+.Je nach Betriebssystem, Region- und Spracheinstellung: 
+[source,java]
+----
+java.io.FileReader(“hello.txt”) // -> "こんにちは"         (macOS)
+java.io.FileReader(“hello.txt”) // -> "ã?“ã‚“ã?«ã?¡ã? "  (Windows (en-US))
+java.io.FileReader(“hello.txt”) // -> "縺ォ縺。縺ッ"       (Windows (ja-JP)
+----
+
+[.tgap.fragment]
+**Verschärfend:** [.emphasize]#Neuere Java APIs wie `Files.write/readString()`, und `Files.newBufferedReader/Writer()` verwendeten dagegen bereits stets UTF-8!#
+
+[%auto-animate]
+=== UTF-8 als Standardkodierung der Java API [jep]#https://openjdk.java.net/jeps/400[JEP 400]#
+Der _default charset_ kommt in der Java API z.B. bei `FileReader/Writer`, `InputStreamReader`, `Formatter` `Scanner`, u.a. zum Einsatz.
+
+[.x-large.emphasize.tgap.boxed]
+**Seit JDK18 wird nun immer UTF-8 +
+als Standardkodierung verwendet!**
+//**The default encoding will always be UTF-8 regardless of the operating system, locale, and language settings.**
+
+
+
+
+[.small.degrade]
+=== „Jahresinspektion“
+
+[%step]
+* [jepinline]#https://openjdk.java.net/jeps/449[JEP 449]# Der **Windows 32-bit** x86 Port ist **„for Removal“** deprecated. 
+
+* [jepinline]#https://openjdk.java.net/jeps/418[JEP 418]# führt ein _Service-Provider Interface_ (SPI) für die **Internet-Address Resolution** ein. +
+[.decent]#Das unterstützt Project Loom, neue Protokolle oder Testing.#
+
+* [jepinline]#https://openjdk.java.net/jeps/451[JEP 451]#  Dynamisches Laden of Agenten führt nun zu einer Warnung (z.B. Mockito). +
+[.decent]#Spätere JVMs werden es vorraussichtlich per Default verbieten.#
+
+* [jepinline]#https://openjdk.java.net/jeps/452[JEP 452]# Die **Key Encapsulation Mechanism (KEM) API**   sichert symmetrische Schlüssel ab.
+
+* [jepinline]#https://openjdk.java.net/jeps/416[JEP 416]# implementiert die **Core Reflection with Method Handles** neu.
+
+* Mit [jepinline]#https://openjdk.java.net/jeps/416[JEP 416]# wurde _Finalization_ als deprecated markiert.
+
+* [jepinline]#https://openjdk.java.net/jeps/42[JEP 422]# bringt einen neuen Linux/RISC-V Port
+
+* Der Aufruf `new URL("https://bentolor.de")` ist nun ebenfalls deprecated
+
+* Die Umwandlung zwischen Primitives (z.B. `long` → `int`) wurde beschleunigt: +
+ [.decent]#Für Java Serializierung bringt das bis zu +5% Performancegewinn.#
+
+[.notes]
+--
+Windows 10 32bit, the last 32bit version will EOL October 2025. 
+
+On the performance side, Per Minborg has made improvements in the conversion between primitives (long to int, for example) via the use of VarHandle in place of existing binary calculations. As these conversion operations are widely used within Java serialization, this one takes advantage of them and sees a performance improvement of almost 5%. Other JDK APIs and many libraries also use these conversions and will see their performance improve. More information in Per Minborg’s article: Java 21: Performance Improvements Revealed.
+
+JEP 452, "Key Encapsulation Mechanism API":: The new Key Encapsulation Mechanisms (KEMs) API strengthens the cryptographic resilience of Java applications against quantum attacks, simplifying the process of securing symmetric keys and eliminating the need for padding. 
+
+JEP 451, "Prepare to Disallow the Dynamic Loading of Agents:: Dynamic Java agent loading is now deprecated for removal. If used, it will display a WARNING in the JVM log. Java agent loading at application startup remains supported, it is only dynamic loading after application startup that is deprecated. The aim is to improve the integrity of the JVM, as an agent can modify the code of an application, loading it after JVM startup is a security risk. 
+--
+
+
+
+[.lightbg,background-video= "pexels-koolshooters-6909829.mp4",options="loop,muted",background-opacity="1"]
+== GraalVM
+
+
+[%notitle,background-image="graalvm-architecture.png",background-size="contain"]
+=== Project Metropolis
+
+[.notes]
+--
+* Polyglot VM
+* In Java geschrieben VM die auf div. Sprachen zielt
+* gemeinnsame Runtime → multiple language with zero overhead
+* Kann mit LLVM native images produzieren
+--
+
+[.left]
+=== GraalVM -- Polyglot VM
+[.col2]
+--
+* *Ahead-of Time compiler* [verydecent]#(AoT)#
+* Polyglotte VM für _div. Sprachen_ +
+→ **JVM**  [decent]#(Java, Kotlin, Scala, …)# +
+→ **LLVM** [decent]#(C, C++) → native# +
+→ **Java** [decent]#Script, Python, Ruby, R#
+--
+
+[.col2]
+--
+* Sprachen **sharen Runtime** +
+  [.decent]#→ Zero Interop Overhead#
+* *Native executables* _(SubstrateVM_) +
+  [.decent]#→ Kleiner Startup & Memory#
+* [.decent]#GraalVM Community & Enterprise# +
+  {sp} +
+  {sp}
+--
+
+[.clear.tgap.fragment]
+--
+.Microservice Frameworks
+_Helidon, Quarkus.io, Micronaut, Spring Fu, Ktor, …_ +
+[.verydecent.x-small]#→ zielen auf GraalVM AoT & Microservices, z.B. via IoC zur Compiletime#
+--
+
+[.notes]
+--
+. Fokus: AoT
+. Mehrteilig:
+* Graal VM & Substrate VM as runtime
+. Benefits
+* AoT → schnellere Startzeiten vs. JIT
+* Native Images → kleinere Startup/Memory → Container
+* Limitations: Dynamic (Reflection)
+* Beeindruckend: GraalVM ab 21.2 unterstützt ebenfalls JFR
+. Commercial offerings "GraalVM Enterprise"
+. zahlreiche Frameworks zielen auf GraalVM AoT & Microservices
+* z.B. IoC zur Compiletime via APT vs. Laufzeit
+--
+
+
+// == Vielen Dank!
+
+
+// [%notitle, background-image="tweet-jdk-evolving.png"]
+// === Bottom line
+// [.notes]
+// --
+// Oldy, but goldie: Still valid
+// --
+
+
+[.darkbg.stretch,background-video="industrial.mp4",background-video-loop="true",background-opacity="0.6"]
+== Vielen Dank!
+
+[.col3-l.x-small]
+--
+.Tools
+* https://www.graalvm.org/[GraalVM]
+* https://jdk.java.net/panama/[Panama EAP Builds (`jextract`)]
+* https://github.com/openjdk/jmc[OpenJDK Mission Control]
+
+.Beispiele
+* https://github.com/openjdk/jextract/tree/master/samples[`jextract`-Examples]
+* https://github.com/openjdk/jdk/tree/master/test/micro/org/openjdk/bench/jdk/incubator/vector[Vector API Sample Benchmarks]
+--
+
+
+[.col3-c.x-small]
+--
+.Referenzwerke
+* https://javaalmanac.io/[**Java Almanac**]
+* https://chriswhocodes.com/vm-options-explorer.html[VM Options Explorer]
+* https://docs.oracle.com/en/java/javase/21/gctuning/[HotSpot Tuning Guide]
+* Vollständige & detaillierte Release Notes für Java https://www.oracle.com/java/technologies/javase/18all-relnotes.html[18] https://www.oracle.com/java/technologies/javase/19all-relnotes.html[19], https://www.oracle.com/java/technologies/javase/20all-relnotes.html[20] &  https://www.oracle.com/java/technologies/javase/21all-relnotes.html[21]
+
+
+.Artikel
+* „Java https://www.happycoders.eu/java/java-19-features/[18], https://www.happycoders.eu/java/java-19-features/[19], https://www.happycoders.eu/java/java-20-features/[20], https://www.happycoders.eu/java/java-21-features/[21] Features (with Examples)“
+
+.Videos
+* Empfehlenswert: https://www.youtube.com/channel/UCmRtPmgnQ04CMUpSUqPfhxQ[Offizieller „Java“-Kanale]
+--
+
+
+[.col3-r.x-small]
+--
+image:java21-lts-presentation-url.png[https://bentolor.github.io/java21-lts-presentation/,250] +
+[.highlight.x-small]#Interaktive HTML5 Slides +
+mit allen Links & Demovideos#
+
+icon:mastodon[set="fab"] https://mastodon.social/@bentolor/[*@ben@tolor.de*] +
+icon:at[] mailto:ben@tolor.de[] +
+icon:github[] https://github.com/bentolor/java21-lts-presentation[bentolor]
+--
+
+[.clear.xx-small.highlight.tgap]
+Proudly made with icon:heart[love,role=emphasize] and:  https://docs.asciidoctor.org/reveal.js-converter/latest/[`asciidoctor-revealjs`],
+https://www.pexels.com/[pexels.com] & https://de.freeimages.com/[freeimages.com]
+
+
+
+
+[pass]
+++++
+<script src="./live.js"></script>
+++++

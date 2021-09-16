@@ -1,0 +1,64 @@
+Nicht Alltäglich: Neues bei Tools, GC's, Vector und FFM API
+
+Neben den prominenten Neuerungen bei API und Sprache bringt das neue Java 21 wieder viele Verbesserungen unter der Haube sowie Neues im Bereich der Performance, Sicherheit und Tools mit sich. In dieser Session wagen wir einen Blick auf die weniger alltäglichen Themen und geben einen Überblick über die wichtigsten Änderungen seit Java 17 und 11.
+
+Dabei erfahren wir, wie Java 21 helfen kann übliche, aber auch spezielle Anwendungen zu beschleunigen. Wir erfahren mehr über experimentelle Funktionen wie die Vector API und das Foreign Function & Memory (FFM) API, und wie diese der wachsenden Bedeutung von Machine Learning gerecht werden möchten aber dabei bereits einige Anläufe hinter sich haben. Nicht zuletzt betrachten wir auch, wie sich die neuesten Verbesserungen im Bereich der Garbage Collectoren (GC) einsortieren lassen und mit welchen alte Zöpfen Java nun wirklich aufräumt.
+
+Lernziele
+
+    Innovationen bei den Garbage Collectoren
+    Neue Ansätze für bessere Anwendungsperformance
+    Einblick in Foreign Function & Memory API
+    Motivation und Neues bei der Vector API
+    Vermischtes aus dem Bereich Tools, Kryptographie und JVM
+
+
+Benjamin Schmid
+Nagarro GmbH
+
+Benjamin Schmid brennt für lösungsorientierte Innovationen, Effizienz und Qualität in der Softwareentwicklung. In technologisch und unternehmerisch gestaltenden Rollen ist er immer wieder erster Ansprechpartner bei komplexen Fragestellungen im Bereich von Java-, Web- und Cloud-native Architekturen sowie Methodik. Auf der stetigen Suche nach innovativen, soliden und nachhaltigen Lösungen gehören Security, sichere Sprachen wie Kotlin oder automatisierte Codeprüfungen zu seinen Steckenpferden. Benjamin verfügt über langjährige Erfahrung beim Aufbau, Coaching und Consulting agiler Teams und gibt seine praxisnahen Erfahrungen und Aha-Momente stets gerne als Redner und Autor weiter.
+
+Fediverse: @ben@tolor.de
+Email: ben@tolor.de
+Twitter: @bentolor
+
+
+Generational ZGC / Shenandoah
+Foreign Function & Memory API
+Vector API
+
+[JFR]
+Teaser: Java Flight Recorder
+Review: CDS & AppCDS
+
+
+[AppCDS & Hotspot JVM]
+CRaC (Coordinated Restore at Checkpoint) https://wiki.openjdk.org/display/crac
+
+[Foreign Function]
+Foreign Function & Memory API Previews (JEP 442 / 434 / 424 / 419)  
+
+[Vector]
+Vector API (Third to Sixth Incubator, JEP 448 / 438 / 426 / 417)
+
+[Misc]
+UTF-8 by Default (JEP 400) 
+Reimplement Core Reflection with Method Handles (JEP 416)
+Internet-Address Resolution SPI (JEP 418)
+Linux/RISC-V Port (JEP 422)
+
+[Tools]
+Simple Web Server (JEP 408)
+Code Snippets in Java API Documentation (JEP 413) 
+
+[GC]
+Generational Shenandoah (Experimental) (JEP 404)
+Generational ZGC (JEP 439)
+
+[Cryptography]
+Key Encapsulation Mechanism API (JEP 452) 
+
+[Cleanup]
+Deprecate Finalization for Removal (JEP 421)
+Deprecate the Windows 32-bit x86 Port for Removal (JEP 449)
+Prepare to Disallow the Dynamic Loading of Agents (JEP 451)
