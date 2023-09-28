@@ -16,7 +16,7 @@ Benjamin Schmid, ben@tolor.de @ben@tolor.de
 :revealjs_slideNumber: c/t
 :revealjs_showSlideNumber: speaker
 :revealjs_autoPlayMedia: true
-:revealjs_defaultTiming: 49
+:revealjs_defaultTiming: 40
 //:revealjs_transitionSpeed: fast
 :revealjs_parallaxBackgroundImage: images/architecture-1216055-colored.bak.jpg
 :revealjs_parallaxBackgroundSize: 3303px 2202px 
@@ -92,10 +92,10 @@ Das muss nicht mehr sein: In Zukunft wird es für Einsteiger noch leichter, einf
 //[background-video="coffee-beans.mp4",background-video-loop="true",options="loop,muted",background-opacity="0.8"]
 == Agenda
 [.decentlightbg.boxed]
-. **Innovationen bei den Garbage Collectors**
-. **Einblick in das Foreign Function & Memory API**
-. **Wofür ist das Vector API gut?**
-. **Vermischtes aus dem Bereich Tools, Kryptografie und JVM**
+.  Innovationen bei den **Garbage Collectors**
+. Einblick in das **Foreign Function & Memory API**
+. Wofür ist das **Vector API** gut?
+. Vermischtes aus dem Bereich **Tools**
 . **Vermischtes: Von alten Zöpfen & neuen Kleinigkeiten**
 . **Ausblick**
 
@@ -434,41 +434,44 @@ image::colorless-2.png[Colored Pointers]
 === ZGC: Automatic Tunings
 [.column.left]
 --
+[.fragment]
 .Dynamic Generation Sizing
 * Freier Speicher ist nicht in Generationen aufgeteilt
 * Zusätzlich: _In-place compaction capabilities_  +
   Somit: Nie _evacuation failure_ (und: Kein `-Xmn` nötig)
 
+[.fragment]
 .Dynamic Tenuring Threshold
 * Kein `-XX:TenuringThreshold` nötig: +
   Automatisch getuned.
 
+[.fragment]
 .Initiating Heap Occupancy
 * Kein `-XX:InitiatingHeapOccupancyPercent`: +
   Automatisch getuned.
 --
 [.column.left]
 --
+[.fragment]
 .Dynamic number of threads
 * Kein `-XX:ConcGCThreads` nötig: +
   Boosted automatisch bei Allocation Spikes.
 
+[.fragment]
 .Things you SHOULD tune
 * Just set the max heap size: `-Xmx`
 
-
-[source,bash]
+[source.fragment,bash]
 ----
 java -XX:+UseZGC -XX:+ZGenerational -Xmx …
 ----
-
 --
 
 [.notes]
 --
 Dynamic Generation Sizing:: _"Pretty tricky to get right" _
 Dynamic Tenuring Threshold:: Hard to get right. Autotuned based on bytes moved.
-Initiating Heap Occupancy:: Based on cost modelling
+Initiating Heap Occupancy:: Ab wieveil % Belegung GC starten: Nun: Based on cost modelling
 Dynamic number of threads:: "Kommt nicht hinterher?" → Boosts GC threads to accommodate allocation spikes
 --
 
@@ -480,7 +483,7 @@ Dynamic number of threads:: "Kommt nicht hinterher?" → Boosts GC threads to ac
 
 [.column.is-half.left]
 --
-**Cassandra 4** Performancetests (128GB):
+**Cassandra 4** Performancetests [.decent]#(128GB)#
 
 * 4x GC Throughput 
 * 25% des ursprünglichen Memory 
@@ -509,29 +512,30 @@ image:zgc-performance.png[ZGC performance]
 
 | G1
 | Balance
-| [decent]#Üblicher Default. Überwiegend Nebenläufig. Zielt auf Balance von Durchsatz & Latenz. Ausreißer-Pausen bis 250~800ms. Guter Durchsatz. Häppchenweise Pausen an Zeitbudget orientiert.#
+| [.decent.small]#Zielt auf Balance von Durchsatz & Latenz. +
+Üblicher Default. Überwiegend Nebenläufig. Ausreißer-Pausen bis 250~800ms. Guter Durchsatz. Häppchenweise Pausen an Zeitbudget orientiert.#
 
 | ZGC
 | Latenz
-| [decent]#Low-latency Champion: Pausen unabhängig Live- und Root-Set.  +
+| [.decent.small]#Low-latency Champion: Pausen unabhängig Live- und Root-Set.  +
   Besser bei `WeakRef` & Auto-tuning als Shenandoah. Bereits Generational.#
 
 | Shenandoah
 | Latenz
-| [decent]#Generational in Arbeit. Auch verfügbar für JDK8, JDK11 und 32-bit. Red Hat.#
+| [.decent.small]#Auch verfügbar für JDK8, JDK11 und 32-bit. Red Hat. Generational in Arbeit.#
 
 | ParallelGC
 | Durchsatz
-| [decent]#Parallel & mehrere Threads: Wenn höchster Durchsatz gefragt ist. +
+| [.decent.small]#Wenn höchster Durchsatz gefragt ist. Parallel & mehrere Threads: +
   Typische Pausen ~300ms bis Sekunden, abhängig von Heap-Größe.#
 
 | SerialGC
 | Speicherbedarf
-| [decent]#Single-Threaded. Empfiehlt sich nur für Heaps bis ~100MB.#
+| [.decent.small]#Single-Threaded. Empfiehlt sich nur für Heaps bis ~100MB.#
 
 | Zing/Azul
 | Pauseless
-| [decent]#Nicht im OpenJDK; nur kommerziell verfügbar#
+| [.decent.small]#Nicht im OpenJDK; nur kommerziell verfügbar#
 |===
 
 [.refs]
@@ -547,9 +551,6 @@ https://docs.oracle.com/en/java/javase/21/gctuning/available-collectors.html
 
 [column.x-small.left]
 --
-> G1 GC has also benefited from some new optimizations: full GCs have been optimized and the Hot Card Cache, which was proving to bring no benefit, has been removed, freeing up some native memory (0.2% of the heap size).
-https://tschatzl.github.io/2023/08/04/jdk21-g1-parallel-gc-changes.html
-
 .ZGC
 * **Generational ZGC**
 * ZGC Supports String Deduplication
@@ -578,10 +579,14 @@ https://tschatzl.github.io/2023/08/04/jdk21-g1-parallel-gc-changes.html
 [.tgap.center]
 icon:exclamation-triangle[] Many, many, more…
 --
+[.refs]
+--
+https://tschatzl.github.io/[JDK xx G1/Parallel/Serial GC changes]
+--
 
 [.notes]
 --
-. lorem
+> G1 GC has also benefited from some new optimizations: full GCs have been optimized and the Hot Card Cache, which was proving to bring no benefit, has been removed, freeing up some native memory (0.2% of the heap size).
 --
 
 === TL;DR: Tipps für den GC
@@ -1034,7 +1039,7 @@ Anderes: Direkt in GA, z.B.
 [.lightbg,background-video="pexels-pressmaster--3141210-geometric-symetric.mp4",options="loop,muted",background-opacity="1"]
 == Vector API [preview]#Incubator#
 
-
+[background-video="pexels-pressmaster--3141210-geometric-symetric.mp4",options="loop,muted",background-opacity="0.4"]
 === Das Vektor-API [preview]#Incubator# [jep]#https://openjdk.java.net/jeps/448[JEP 448]#
 
 > Introduce an API to express **vector computations** that reliably compile at runtime to optimal vector instructions on supported CPU architectures, thus achieving performance superior to equivalent scalar computations.
@@ -1352,82 +1357,6 @@ https://github.com/openjdk/jdk/tree/master/test/micro/org/openjdk/bench/jdk/incu
 [.lightbg,background-video="hammer.mp4",background-video-loop="true",background-opacity="0.8"]
 == Tooling
 
-[%auto-animate,data-id=animatedtitle]
-=== Es ist nicht einfach, ein Java-Anfänger zu sein…
-
-
-[%auto-animate,data-id=animatedtitle]
-=== Es ist nicht einfach, ein Java-Anfänger zu sein…
-
-[source%linenums.tgap,java,data-id=animatedcode]
-----
-public class ClassicHello {
-    String greeting() { return "Hello, World!"; }
-
-    public static void main(String[] args) { 
-        System.out.println(new ClassicHello().greeting());
-    }
-}
-----
-[.notes]
---
->  "evolve the Java language so that students can write their first programs without needing to understand language features designed for large programs."
-
-*  led by Brian Goetz: Lower initial challenges to newcomers vs.
-** Claim: Concept overload: `public` + `class` +_Methods_ + `public` (again) + `static` + `String[]` + `System.out.println`
---
-
-[%auto-animate,data-id=animatedtitle]
-=== …aber bald wird es einfacher sein!
-
-[source%linenums.tgap,java,data-id=animatedcode]
-----
-String greeting() { return "Hello, World!"; }
-
-void main() {
-    System.out.println(greeting());
-}
-----
-
-
-
-
-[%auto-animate.columns]
-=== Unnamed Classes and Instance Main Methods [jep]#https://openjdk.java.net/jeps/445[JEP 445]# [preview]#Preview#
-
-[.column]
---
-[source,java,data-id=animatedcode]
-----
-String greeting() { return "Hello, World!"; }
-
-void main() {
-    System.out.println(greeting());
-}
-----
-
-[source,shell]
-----
-$ javac --enable-preview --release 21 Hello.java
-$ java  --enable-preview              Hello
-----
---
-
-[.column.is-one-third]
---
-{sp} +
-
-1. `main()`-Methoden +
-   auf _Instanzen_
-2. _unnamed classes_
---
-
-
-[.notes]
---
-https://openjdk.org/projects/amber/design-notes/on-ramp
---
-
 [%auto-animate%auto-animate-restart]
 === Simple Web Server [jep]#https://openjdk.java.net/jeps/408[JEP 408]#
 [source,shell,data-id="code"]
@@ -1561,14 +1490,96 @@ public static void main(String[] args) {
 video::javadoc.webm[Javadoc feature demo,width=426]
 --
 
-
 //=== `jshell` Highlighting
 //`jshell` higlighted nun Code sowie Deprecated usage.
 
 
 
+
 [.lightbg,background-video= "pexels-pavel-danilyuk-6158064.mp4",options="loop,muted",background-opacity="0.7"]
 == Details & Maintenance
+
+[%auto-animate,data-id=animatedtitle]
+=== Es ist nicht einfach, ein Java-Anfänger zu sein…
+
+
+[%auto-animate,data-id=animatedtitle]
+=== Es ist nicht einfach, ein Java-Anfänger zu sein…
+
+[source%linenums.tgap,java,data-id=animatedcode]
+----
+public class ClassicHello {
+    String greeting() { return "Hello, World!"; }
+
+    public static void main(String[] args) { 
+        System.out.println(new ClassicHello().greeting());
+    }
+}
+----
+[.notes]
+--
+>  "evolve the Java language so that students can write their first programs without needing to understand language features designed for large programs."
+
+*  led by Brian Goetz: Lower initial challenges to newcomers vs.
+** Claim: Concept overload: `public` + `class` +_Methods_ + `public` (again) + `static` + `String[]` + `System.out.println`
+--
+
+[%auto-animate,data-id=animatedtitle]
+=== …aber bald wird es einfacher sein!
+
+[source%linenums.tgap,java,data-id=animatedcode]
+----
+String greeting() { return "Hello, World!"; }
+
+void main() {
+    System.out.println(greeting());
+}
+----
+
+
+
+
+[%auto-animate.columns]
+=== Unnamed Classes and Instance Main Methods [jep]#https://openjdk.java.net/jeps/445[JEP 445]# [preview]#Preview#
+
+[.column]
+--
+[source,java,data-id=animatedcode]
+----
+String greeting() { return "Hello, World!"; }
+
+void main() {
+    System.out.println(greeting());
+}
+----
+
+[source,shell]
+----
+$ javac --enable-preview --release 21 Hello.java
+$ java  --enable-preview              Hello
+----
+--
+
+[.column.is-one-third]
+--
+{sp} +
+
+1. `main()`-Methoden +
+   auf _Instanzen_
+2. _unnamed classes_
+--
+[.notes]
+--
+https://openjdk.org/projects/amber/design-notes/on-ramp
+--
+
+
+
+
+
+
+
+
 
 [%auto-animate]
 === UTF-8 als Standardkodierung der Java API [jep]#https://openjdk.java.net/jeps/400[JEP 400]#
@@ -1734,6 +1745,7 @@ _Helidon, Quarkus.io, Micronaut, Spring Fu, Ktor, …_ +
 
 .Artikel
 * „Java https://www.happycoders.eu/java/java-19-features/[18], https://www.happycoders.eu/java/java-19-features/[19], https://www.happycoders.eu/java/java-20-features/[20], https://www.happycoders.eu/java/java-21-features/[21] Features (with Examples)“
+* JDK https://tschatzl.github.io/2022/03/14/jdk18-g1-parallel-gc-changes.html[18], https://tschatzl.github.io/2022/09/16/jdk19-g1-parallel-gc-changes.html[19], https://tschatzl.github.io/2023/08/04/jdk21-g1-parallel-gc-changes.html[20], https://tschatzl.github.io/2023/08/04/jdk21-g1-parallel-gc-changes.html[21] G1/Parallel/Serial GC changes]
 
 .Videos
 * Empfehlenswert: https://www.youtube.com/channel/UCmRtPmgnQ04CMUpSUqPfhxQ[Offizieller „Java“-Kanale]
