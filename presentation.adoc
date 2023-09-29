@@ -1,4 +1,4 @@
-= Nicht alltäglich: Neues bei Tools, GCs, Vector und FFM API
+= Nicht alltäglich: Neues bei Tools, GCs, Vector und FFM API in Java 21 LTS
 Benjamin Schmid, ben@tolor.de @ben@tolor.de
 1.0, 2023-10-04
 // :docinfo: private would enable presentation-docinfo-footer.html
