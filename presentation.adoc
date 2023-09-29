@@ -26,7 +26,7 @@ Benjamin Schmid, ben@tolor.de @ben@tolor.de
 :customcss: css/presentation.css
 :imagesdir: images
 :source-highlighter: highlight.js
-//:highlightjsdir: https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10-stable/build
+:highlightjsdir: https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10-stable/build
 //:highlightjs-theme: css/hljs/agate.css
 //:highlightjs-theme: css/hljs/base16/framer.css
 //:highlightjs-theme: css/hljs/github-dark.css
@@ -1487,7 +1487,7 @@ public static void main(String[] args) {
 --
 [.column]
 --
-video::javadoc.webm[Javadoc feature demo,width=426]
+video::javadoc.webm[width=426]
 --
 
 //=== `jshell` Highlighting
