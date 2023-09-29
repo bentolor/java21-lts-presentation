@@ -561,6 +561,13 @@ DIV.refs LI:hover P A {
   color: var(--b-highlight);;
 }
 
+/* Refs break the PDF export. Just hide them... */
+@media print {
+  DIV.refs {
+    display: none !important;
+  }
+}
+
 .deleted {
   text-decoration: line-through;
 }
