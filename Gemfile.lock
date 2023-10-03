@@ -12,7 +12,7 @@ GEM
     tilt (2.0.11)
 
 PLATFORMS
-  ruby
+  x86_64-linux
 
 DEPENDENCIES
   asciidoctor-chart
@@ -20,4 +20,4 @@ DEPENDENCIES
   asciidoctor-revealjs
 
 BUNDLED WITH
-   2.1.4
+   2.4.13
