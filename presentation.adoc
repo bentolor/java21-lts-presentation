@@ -16,7 +16,7 @@ Benjamin Schmid, benjamin.schmid@nagarro.com
 :revealjs_slideNumber: c/t
 :revealjs_showSlideNumber: speaker
 :revealjs_autoPlayMedia: true
-:revealjs_defaultTiming: 40
+:revealjs_defaultTiming: 41
 //:revealjs_transitionSpeed: fast
 :revealjs_parallaxBackgroundImage: images/architecture-1216055-colored.bak.jpg
 :revealjs_parallaxBackgroundSize: 3303px 2202px 
@@ -42,18 +42,19 @@ Benjamin Schmid, benjamin.schmid@nagarro.com
 --
 Vielen Dank …!
 
-Hallo & Herzlich Willkommen! Mein Name ist Benjamin Schmid und ich bin aktuell als Tech Lead & Account CTO bei der Nagarro tätig. Seit über 20 Jahren bin ich in verschiedensten, technisch leitenden Rollen unterwegs  – vom Technology Advisor über Manager R&I bis zum Portfolio Manager – und immer gern vorne mit dabei, wenn es um Probleme, Fragen und Innovationen rund um methodischen & technologischen Fragestellung in der Softwareentwicklung geht. 
+Hallo & Herzlich Willkommen! 
 
-Dabei war war ich immer ein großer Freund der qualitativ hochwertigen, innovativer und lösungsorientierte Softwareentwicklung. Und das spiegelt sich meiner Ansicht nach auch darin, dass über die Zeit das Java-Ökosystem stets einen wichtigen Fokuspunkt für mich darstellte.
+Mein Name ist Benjamin Schmid und ich bin aktuell als Tech Lead & Account CTO bei der Nagarro tätig. 
 
-Daher freue ich mich heute besonder wieder über die Gelegenheit, ein bisschen tiefer über die neue Java LTS-Version 21 berichten zu dürfen, und welche Verbesserungen auch für die alltägliche Projektpraxis echte Mehrwerte versrepchen. In der Sessions hier soll es dabei weniger um die prominente Sprachfeatures gehen, sondern wir wollen einen Blick auf die Neuerungen bei den Internas, den eher exotischen APIs und den Tools wagen! 
+Seit über 20 Jahren bin ich in verschiedensten, technisch leitenden Rollen unterwegs  – vom Technology Advisor über Manager R&I bis zum Portfolio Manager – und immer gern vorne mit dabei, wenn es um Probleme, Fragen und Innovationen rund um methodischen & technologischen Fragestellung in der Softwareentwicklung geht. 
 
-Das wird ein bisschen ein wilder Ritt durch ganz verschiedenen Themen. 
-Aber auch wenn nicht jedes Thema für jeden Projektkontext im Vordergrund steht, ist ein Blick über den Tellerand immer wieder spannend, was sich letztendlich auch innerhalb der Java Plattform so alles tut.
+Dabei war ich immer ein großer Freund von qualitativ hochwertigen, innovativer und lösungsorientierte Softwareentwicklung: Und das Java-Ökosystem bildet hier eine herovrragende Grundlage, weshalb es auch immer einen wichtigen Fokuspunkt für meine Arbeit darstellt.
 
-Ich denke, die Vorfreude auf Java 21 lohnt sich! 
+Heute freue ich mich besonder, wieder die Gelegenheit zu haben gemeinsam ein bisschen tiefer auf die neue Java LTS-Version 21 zu blicken. In unserer Sessions hier soll es daher weniger um prominente neue Sprachfeatures gehen, sondern wir wollen mehr Blick auf die Neuerungen bei den Internas, den eher nicht alltäglichen APIs und den Tools wagen! 
 
-Denn 3 Dinge die Java 21 unter der Haube mit sich bringt sind z.B.:
+Auch wenn dabei nicht jedes Thema für den täglichen Projektkontext im Vordergrund steht: Es ist immer wieder spannend zu sehen, was sich letztendlich auch mit der Java Plattform so alles weiterentwickelt.
+
+Schon vorweg genommen: Ich denke, die Vorfreude auf Java 21 lohnt sich! Denn 3 Dinge die Java 21 unter der Haube mit sich bringt sind z.B.:…
 --
 
 // [.lightbg, background-image="327-chevy-engine-1542516.jpg",background-opacity="0.9"]
@@ -72,7 +73,7 @@ Denn 3 Dinge die Java 21 unter der Haube mit sich bringt sind z.B.:
 === 5.388 weniger Bugs, dafür 3.539 neue Enhancements
 [.notes]
 --
-…Der Fehlerteufel steckt überall! Auch im JDK wurden als 5-tausend Bugs seit JDK17 LTS behoben! Und zugleich flossen über dreieinhalbtausend Detail-Verbesserungen mit ein!…
+…Der Fehlerteufel steckt überall! Auch im JDK wurden als zahlreiche Bugs seit Java 17 LTS behoben! Dabei flossen auch viele Detail-Verbesserungen mit ein!…
 
 https://bugs.openjdk.org/browse/JDK-8284090?jql=project%20%3D%20JDK%20AND%20statusCategory%20%3D%20Done%20AND%20fixVersion%20%3E%3D%2018%20AND%20fixVersion%20%3C%3D%2021%20AND%20issuetype%20%3D%20Bug%20%20ORDER%20BY%20issuetype%20DESC%2C%20updated%20DESC
 
@@ -95,9 +96,9 @@ Das muss nicht mehr sein: In Zukunft wird es für Einsteiger noch leichter, einf
 .  Innovationen bei den **Garbage Collectors**
 . Einblick in das **Foreign Function & Memory API**
 . Wofür ist das **Vector API** gut?
-. Vermischtes aus dem Bereich **Tools**
-. **Vermischtes: Von alten Zöpfen & neuen Kleinigkeiten**
-. **Ausblick**
+. Neues bei den **Tools**
+. **Vermischtes:** Von alten Zöpfen & neuen Kleinigkeiten
+//. **Ausblick**
 
 [.notes]
 --
@@ -111,7 +112,7 @@ Aber Blicken wir kur auf unsere Programm für heute…
 [.notes]
 --
 . Kommen wir zum ersten Theme: GCs. Ein zentrales Thema für Performance & Skalierbarkeit.
-. Neben dem Arbeitstier G1, welches viele Verbesserungen im Detail erfahren, hat sich vor allem ein GC einen Namen gemacht: Der ZGC, der mit Java 21 einen weiteren Sprung hingelegt hat. 
+. Neben dem Arbeitstier G1, welches wieder Verbesserungen im Detail erfahren hat, macht sich in Java 21 vor allem ein GC einen Namen: Der ZGC, der mit Java 21 nochmals einen ordentlichen Sprung hingelegt hat. 
 . Wir schauen dazu ein bisschen tiefer hinter die Kulissen von ZGC selbst, geben aber auch eine kleine Stillberatung für die Auswahl des richtigen GCs!
 --
 
@@ -152,13 +153,12 @@ Aber Blicken wir kur auf unsere Programm für heute…
 --
 . ZGC & Shenandoah nicht neu; bereits mit JDK15 production-ready
 . Viel Detailpflege auch an deren GCs. Allen voran G1: Dem Arbeitspferd & default in aktuellen JVMs. 
-. G1: Auch wenn wenig Schlagzeilen, so doch kontinuerliche Verbesserungen
-. Neu in JDK21: ZGC unterstützt nun Generationen; gewinnt damit nochmals neues Konzept
-. Auch Shenandoah hatte lange Generational Support für JDK21 geplant; aber im letzten Moment Rückzieher gemacht. Obwohl ZGC & Shenandoah vom Konzept vergleichbar sind, hat ZGC seinen Vorsprung damit nun in Java 21 weiter ausgebaut.
+. Neu in JDK21: ZGC unterstützt nun Generationen; gewinnt damit nochmals einen ordentlichen Performance-Boost
+. Übrigens: Auch Shenandoah, der ZGC sehr ählich ist, hatte lange Generational Support für JDK21 geplant; aber im letzten Moment Rückzieher gemacht. 
 
-Aber was zeichnet denn nun ZGC – und auch Shenandoah – nun aus? Und sind sie das richtige für mich? 
+Obwohl ZGC & Shenandoah vom Konzept vergleichbar sind, hat ZGC seinen Vorsprung damit nun in Java 21 weiter ausgebaut. Aber was zeichnet denn nun ZGC – und auch Shenandoah – nun aus? Und sind sie das richtige für mich? 
 
-Werfen wir einen näheren Blick darauf…
+Dazu werfen wir einen näheren Blick auf die beiden und insbesondere bei ZGC unter die Haube…
 --
 
 
@@ -430,52 +430,6 @@ image::colorless-2.png[Colored Pointers]
 --
 
 
-[.columns.x-small]
-=== ZGC: Automatic Tunings
-[.column.left]
---
-[.fragment]
-.Dynamic Generation Sizing
-* Freier Speicher ist nicht in Generationen aufgeteilt
-* Zusätzlich: _In-place compaction capabilities_  +
-  Somit: Nie _evacuation failure_ (und: Kein `-Xmn` nötig)
-
-[.fragment]
-.Dynamic Tenuring Threshold
-* Kein `-XX:TenuringThreshold` nötig: +
-  Automatisch getuned.
-
-[.fragment]
-.Initiating Heap Occupancy
-* Kein `-XX:InitiatingHeapOccupancyPercent`: +
-  Automatisch getuned.
---
-[.column.left]
---
-[.fragment]
-.Dynamic number of threads
-* Kein `-XX:ConcGCThreads` nötig: +
-  Boosted automatisch bei Allocation Spikes.
-
-[.fragment]
-.Things you SHOULD tune
-* Just set the max heap size: `-Xmx`
-
-[source.fragment,bash]
-----
-java -XX:+UseZGC -XX:+ZGenerational -Xmx …
-----
---
-
-[.notes]
---
-Dynamic Generation Sizing:: _"Pretty tricky to get right" _
-Dynamic Tenuring Threshold:: Hard to get right. Autotuned based on bytes moved.
-Initiating Heap Occupancy:: Ab wieveil % Belegung GC starten: Nun: Based on cost modelling
-Dynamic number of threads:: "Kommt nicht hinterher?" → Boosts GC threads to accommodate allocation spikes
---
-
-
 
 
 [.columns]
@@ -502,40 +456,88 @@ image:zgc-performance.png[ZGC performance]
 // ----
 
 
+[.columns.x-small]
+=== ZGC: Automatic Tunings
+[.column.left]
+--
+[.fragment]
+.Dynamic Generation Sizing
+* Freier Speicher ist nicht in Generationen aufgeteilt
+
+[.fragment]
+.Dynamic Tenuring Threshold
+* Kein `-XX:TenuringThreshold` nötig: +
+  Automatisch getuned.
+
+[.fragment]
+.Initiating Heap Occupancy
+* Kein `-XX:InitiatingHeapOccupancyPercent`: +
+  Automatisch getuned.
+--
+[.column.left]
+--
+[.fragment]
+.Dynamic number of threads
+* Kein `-XX:ConcGCThreads` nötig: +
+  Boosted automatisch bei Allocation Spikes.
+
+[.fragment]
+.In-place compaction capabilities
+* Somit: Nie _evacuation failure_ (und: Kein `-Xmn` nötig)
+
+[.fragment]
+.Things you SHOULD tune
+* Just set the max heap size: `-Xmx`
+
+[source.fragment,bash]
+----
+java -XX:+UseZGC -XX:+ZGenerational -Xmx …
+----
+--
+
+[.notes]
+--
+Dynamic Generation Sizing:: _"Pretty tricky to get right" _
+Dynamic Tenuring Threshold:: Hard to get right. Autotuned based on bytes moved.
+Initiating Heap Occupancy:: Ab wieveil % Belegung GC starten: Nun: Based on cost modelling
+Dynamic number of threads:: "Kommt nicht hinterher?" → Boosts GC threads to accommodate allocation spikes
+--
+
+
 
 [.degrade]
 === Stilberatung: Welcher GC ist der Richtige für mich?
 
-[.x-small,cols=">1s,^2,7e",grid="horizontal",frame="none"]
+[.x-small,cols=">1s,2e,7",grid="horizontal",frame="none"]
 |===
 |GC | Optimiert für… | Kommentar
 
 | G1
 | Balance
-| [.decent.small]#Zielt auf Balance von Durchsatz & Latenz. +
+| [.small]#Zielt auf Balance von Durchsatz & Latenz. +
 Üblicher Default. Überwiegend Nebenläufig. Ausreißer-Pausen bis 250~800ms. Guter Durchsatz. Häppchenweise Pausen an Zeitbudget orientiert.#
 
 | ZGC
 | Latenz
-| [.decent.small]#Low-latency Champion: Pausen unabhängig Live- und Root-Set.  +
+| [.small]#Low-latency Champion: Pausen unabhängig Live- und Root-Set.  +
   Besser bei `WeakRef` & Auto-tuning als Shenandoah. Bereits Generational.#
 
 | Shenandoah
 | Latenz
-| [.decent.small]#Auch verfügbar für JDK8, JDK11 und 32-bit. Red Hat. Generational in Arbeit.#
+| [.small]#Auch verfügbar für JDK8, JDK11 und 32-bit. Red Hat. Generational in Arbeit.#
 
 | ParallelGC
 | Durchsatz
-| [.decent.small]#Wenn höchster Durchsatz gefragt ist. Parallel & mehrere Threads: +
+| [.small]#Wenn höchster Durchsatz gefragt ist. Parallel & mehrere Threads: +
   Typische Pausen ~300ms bis Sekunden, abhängig von Heap-Größe.#
 
 | SerialGC
 | Speicherbedarf
-| [.decent.small]#Single-Threaded. Empfiehlt sich nur für Heaps bis ~100MB.#
+| [.small]#Single-Threaded. Empfiehlt sich nur für Heaps bis ~100MB.#
 
 | Zing/Azul
 | Pauseless
-| [.decent.small]#Nicht im OpenJDK; nur kommerziell verfügbar#
+| [.small]#Nicht im OpenJDK; nur kommerziell verfügbar#
 |===
 
 [.refs]
@@ -581,7 +583,7 @@ icon:exclamation-triangle[] Many, many, more…
 --
 [.refs]
 --
-https://tschatzl.github.io/[JDK xx G1/Parallel/Serial GC changes]
+https://tschatzl.github.io/[JDK 18-21 G1/Parallel/Serial GC changes]
 --
 
 [.notes]
@@ -589,19 +591,19 @@ https://tschatzl.github.io/[JDK xx G1/Parallel/Serial GC changes]
 > G1 GC has also benefited from some new optimizations: full GCs have been optimized and the Hot Card Cache, which was proving to bring no benefit, has been removed, freeing up some native memory (0.2% of the heap size).
 --
 
-=== TL;DR: Tipps für den GC
-
-[%step.statement.tgap]
-icon:level-up-alt[] Upgrade lohnt sich!
-
-[%step.statement]
-icon:stopwatch[] Latenz wichtig? → ZGC
-
-[%step.statement]
-icon:graduation-cap[] „Probieren geht über Studieren!“
-
-[%step.statement]
-icon:trash-alt[] Mut zum Loslassen: GC-Parameter
+//=== TL;DR: Tipps für den GC
+//
+//[%step.statement.tgap]
+//icon:level-up-alt[] Upgrade lohnt sich!
+//
+//[%step.statement]
+//icon:stopwatch[] Latenz wichtig? → ZGC
+//
+//[%step.statement]
+//icon:graduation-cap[] „Probieren geht über Studieren!“
+//
+//[%step.statement]
+//icon:trash-alt[] Mut zum Loslassen: GC-Parameter
 
 
 
@@ -611,7 +613,7 @@ icon:trash-alt[] Mut zum Loslassen: GC-Parameter
 [.degrade]
 == Exkurs: Preview features [preview]#Preview# [jep]#https://openjdk.java.net/jeps/12[JEP 12]#
 … sind neue **Sprach–, JVM– oder API-Features**, die bereits **[underline]#vollständig# spezifiziert und implementiert** sind, aber durch Community Feedback aus dem _„echten Leben“ zusätzlich validiert werden sollen. +
-[.decent.x-small]#_z.B.: Pattern Matching, Switch Expression, Text Blocks, Records, Sealed Classes_#
+[.x-small]#_z.B.: Pattern Matching, Switch Expression, Text Blocks, Records, Sealed Classes_#
 
 [.col2]
 --
@@ -699,7 +701,7 @@ image::jni-process.png[Java Native Interface Process, 1000, float="left"]
 
 [.small]
 --
-* 26 Jahre alt
+* 28+ Jahre alt
 * erfordert `.c` & `.h`-Files
 * mehrstufiger Prozess: +
   kleinteilig & brüchig
@@ -784,17 +786,17 @@ class CallPid {
   public static void main(String... p) throws Throwable {
     var libSymbol = CLinker.systemLookup().lookup("getpid").orElseThrow();
     var javaSig = MethodType.methodType(long.class);                       <1>
-    var nativeSig = FunctionDescriptor.of(CLinker.C_LONG);
+    var nativeSig = FunctionDescriptor.of(CLinker.C_LONG);                 <2>
 
     CLinker cABI = CLinker.getInstance();
-    var getpid = cABI.downcallHandle(libSymbol, javaSig, nativeSig);       <2>
+    var getpid = cABI.downcallHandle(libSymbol, javaSig, nativeSig);
 
     System.out.println((long) getpid.invokeExact());
   }
 }
 ----
 <1> Zusätzlich: Definition gewünschter _Java-Signatur_ des Java Foreign Handles
-<2> …und Verwendung dergleichen
+<2> …und zugleich der _Native-Signatur_.
 
 [.degrade%auto-animate]
 === Komplexeres Beispiel mit Off-Heap Memory
@@ -803,7 +805,7 @@ class CallPid {
 int radixsort(const	unsigned char **base,	int	nmemb,
               const unsigned char *table, unsigned endbyte);
 ----
-[.decent.xx-small]#…sortiert `nmemb` Strings die jeweils mit `endbyte` terminiert sind: Der erste String bei `base`# +
+[.xx-small]#…sortiert `nmemb` Strings die jeweils mit `endbyte` terminiert sind: Der erste String bei `base`# +
 [.fragment]
 --
 ↓
@@ -921,7 +923,7 @@ https://github.com/openjdk/jextract[Project Panama jextract]
 --
 
 
-[%notitle,background-video="native-python-fast.mp4",background-size="contain"]
+[%notitle,background-video="native-python-fast-cut.mp4",background-size="contain"]
 === `jextract` Demo
 
 // === `jextract` Demo (Transcript)
@@ -1021,7 +1023,7 @@ java  --add-modules jdk.incubator.foo …
 aktuell: Vector API
 
 {sp} +
-[.emphasize.fragment]#Dabei gilt: _„Alles im Fluß!“_#
+[.emphasize]#Dabei gilt: _„Alles im Fluß!“_#
 
 [.notes]
 --
@@ -1067,7 +1069,7 @@ image::vector-calculation.png[Vector calcuation example,900]
 [.column.is-half.small]
 --
 .Motivation
-* SIMD [.decent]#(Single Instruction Multiple Data)#-Features aktueller CPUs [.decent]#(SSE, AVX, 3DNow, AArch64: Neon)#.
+* **SIMD** [.decent]#(Single Instruction Multiple Data)#-Features aktueller CPUs [.decent]#(SSE, AVX, 3DNow, AArch64: Neon)#.
 * → **Performance** & [.decent]#(Energie-)# **Effizienz**
 
 .Anwendungsfälle
@@ -1077,7 +1079,7 @@ image::vector-calculation.png[Vector calcuation example,900]
 * _Banales:_ Array-Vergleich, Zeichensatz- konvertierungen, …
 --
 
-[.column.is-half.small]
+[.column.is-half.small.fragment]
 --
 .Ziele
 * Klare & prägnante API
@@ -1330,8 +1332,6 @@ for (int i = 0; i < a1.length; i += species.length()) {
 }
 double vBetrag = Math.sqrt(sqrSums);
 ----
-[.fragment.decent]
-Auch das aufaddieren der Quadrate könnte man wunderbar per Vector-API abbilden!
 
 
 [.degrade]
@@ -1423,10 +1423,10 @@ public static void main(String[] args) {
 [.column.fragment]
 --
 .Unterstützte Markup Tags:
-* `@start` & `@end` _Regions_ für referenzierbare Ausschnitte
-* `@highlight`-ing anhand  RegEx, Regions oder Text
-* `@replace` für Textersetzungen
-* `@link` ermöglicht Verlinkungen
+* `@start` & `@end` **Regionen* für referenzierbare Ausschnitte
+* **`@highlight`-ing** anhand  RegEx, Regions oder Text
+* `@replace` für **Textersetzungen**
+* `@link` ermöglicht **Verlinkungen**
 
 [.xx-small.decent.fragment]#Markup-_Tags_ haben die Form `@name` gefolgt von _Argumenten_ der Form `param="wert"` und sind als _Kommentare_ in der Sprache des Snippets verfasst. Mit `:` wirken sie auf die Folgezeile.#
 --
@@ -1487,7 +1487,7 @@ public static void main(String[] args) {
 --
 [.column]
 --
-video::javadoc.webm[width=426]
+video::javadoc-fast.mp4[width=426]
 --
 
 //=== `jshell` Highlighting
@@ -1647,64 +1647,64 @@ JEP 451, "Prepare to Disallow the Dynamic Loading of Agents:: Dynamic Java agent
 
 
 
-[.lightbg,background-video= "pexels-koolshooters-6909829.mp4",options="loop,muted",background-opacity="1"]
-== GraalVM
+// [.lightbg,background-video= "pexels-koolshooters-6909829.mp4",options="loop,muted",background-opacity="1"]
+// == GraalVM
 
 
-[%notitle,background-image="graalvm-architecture.png",background-size="contain"]
-=== Project Metropolis
+// [%notitle,background-image="graalvm-architecture.png",background-size="contain"]
+// === Project Metropolis
 
-[.notes]
---
-* Polyglot VM
-* In Java geschrieben VM die auf div. Sprachen zielt
-* gemeinnsame Runtime → multiple language with zero overhead
-* Kann mit LLVM native images produzieren
---
+// [.notes]
+// --
+// * Polyglot VM
+// * In Java geschrieben VM die auf div. Sprachen zielt
+// * gemeinnsame Runtime → multiple language with zero overhead
+// * Kann mit LLVM native images produzieren
+// --
 
-[.left]
-=== GraalVM -- Polyglot VM
-[.col2]
---
-* *Ahead-of Time compiler* [verydecent]#(AoT)#
-* Polyglotte VM für _div. Sprachen_ +
-→ **JVM**  [decent]#(Java, Kotlin, Scala, …)# +
-→ **LLVM** [decent]#(C, C++) → native# +
-→ **Java** [decent]#Script, Python, Ruby, R#
---
+// [.left]
+// === GraalVM -- Polyglot VM
+// [.col2]
+// --
+// * *Ahead-of Time compiler* [verydecent]#(AoT)#
+// * Polyglotte VM für _div. Sprachen_ +
+// → **JVM**  [decent]#(Java, Kotlin, Scala, …)# +
+// → **LLVM** [decent]#(C, C++) → native# +
+// → **Java** [decent]#Script, Python, Ruby, R#
+// --
 
-[.col2]
---
-* Sprachen **sharen Runtime** +
-  [.decent]#→ Zero Interop Overhead#
-* *Native executables* _(SubstrateVM_) +
-  [.decent]#→ Kleiner Startup & Memory#
-* [.decent]#GraalVM Community & Enterprise# +
-  {sp} +
-  {sp}
---
+// [.col2]
+// --
+// * Sprachen **sharen Runtime** +
+//   [.decent]#→ Zero Interop Overhead#
+// * *Native executables* _(SubstrateVM_) +
+//   [.decent]#→ Kleiner Startup & Memory#
+// * [.decent]#GraalVM Community & Enterprise# +
+//   {sp} +
+//   {sp}
+// --
 
-[.clear.tgap.fragment]
---
-.Microservice Frameworks
-_Helidon, Quarkus.io, Micronaut, Spring Fu, Ktor, …_ +
-[.verydecent.x-small]#→ zielen auf GraalVM AoT & Microservices, z.B. via IoC zur Compiletime#
---
+// [.clear.tgap.fragment]
+// --
+// .Microservice Frameworks
+// _Helidon, Quarkus.io, Micronaut, Spring Fu, Ktor, …_ +
+// [.verydecent.x-small]#→ zielen auf GraalVM AoT & Microservices, z.B. via IoC zur Compiletime#
+// --
 
-[.notes]
---
-. Fokus: AoT
-. Mehrteilig:
-* Graal VM & Substrate VM as runtime
-. Benefits
-* AoT → schnellere Startzeiten vs. JIT
-* Native Images → kleinere Startup/Memory → Container
-* Limitations: Dynamic (Reflection)
-* Beeindruckend: GraalVM ab 21.2 unterstützt ebenfalls JFR
-. Commercial offerings "GraalVM Enterprise"
-. zahlreiche Frameworks zielen auf GraalVM AoT & Microservices
-* z.B. IoC zur Compiletime via APT vs. Laufzeit
---
+// [.notes]
+// --
+// . Fokus: AoT
+// . Mehrteilig:
+// * Graal VM & Substrate VM as runtime
+// . Benefits
+// * AoT → schnellere Startzeiten vs. JIT
+// * Native Images → kleinere Startup/Memory → Container
+// * Limitations: Dynamic (Reflection)
+// * Beeindruckend: GraalVM ab 21.2 unterstützt ebenfalls JFR
+// . Commercial offerings "GraalVM Enterprise"
+// . zahlreiche Frameworks zielen auf GraalVM AoT & Microservices
+// * z.B. IoC zur Compiletime via APT vs. Laufzeit
+// --
 
 
 // == Vielen Dank!
