@@ -97,7 +97,8 @@ Das muss nicht mehr sein: In Zukunft wird es für Einsteiger noch leichter, einf
 . Einblick in das **Foreign Function & Memory API**
 . Wofür ist das **Vector API** gut?
 . Neues bei den **Tools**
-. **Vermischtes:** Von alten Zöpfen & neuen Kleinigkeiten
+. **Vermischtes** 
+// Von alten Zöpfen & neuen Kleinigkeiten
 //. **Ausblick**
 
 [.notes]
@@ -113,53 +114,53 @@ Aber Blicken wir kur auf unsere Programm für heute…
 --
 . Kommen wir zum ersten Theme: GCs. Ein zentrales Thema für Performance & Skalierbarkeit.
 . Neben dem Arbeitstier G1, welches wieder Verbesserungen im Detail erfahren hat, macht sich in Java 21 vor allem ein GC einen Namen: Der ZGC, der mit Java 21 nochmals einen ordentlichen Sprung hingelegt hat. 
-. Wir schauen dazu ein bisschen tiefer hinter die Kulissen von ZGC selbst, geben aber auch eine kleine Stillberatung für die Auswahl des richtigen GCs!
+//. Wir schauen dazu ein bisschen tiefer hinter die Kulissen von ZGC selbst, geben aber auch eine kleine Stillberatung für die Auswahl des richtigen GCs!
 --
 
 
-[.degrade.x-small]
-=== GC Evolution Timeline
-[.col2]
---
-[width=90%,grid=vertical,frame=none,cols="^1e,5"]
-|===
-|11 | [decent]#icon:vial[]# ZGC Experimental
-|12 | [decent]#icon:vial[]# Shenandoah Experimental +
-      [decent]#icon:compress-alt[] G1 Uncommit Memory# +
-      [decent]#icon:undo[] ZGC Class Unloading#
-|[decent]#13# | [decent]#icon:compress-alt[] ZGC Uncommit Memory#
-|14 | icon:windows[] & icon:apple[] ZGC Support +
-      icon:trash[] CMS Removal +
-      [decent]#icon:bomb[] ParalellOldGC Deprecation#
-|===
---
-[.col2]
---
-[width=90%,grid=vertical,frame=none,cols="^1e,5"]
-|===
-|15 | icon:award[] **Shenandoah** & +
-      icon:award[] **ZGC** Production-ready
-|[decent]#16# | [decent]#icon:chart-line[] ZGC Improvements#
-| **17** | [decent]#icon:flag[] _Java 17 LTS_#
-|[decent]#18# | [decent]#icon:clone[] ZGC String depduplication#
+// [.degrade.x-small]
+// === GC Evolution Timeline
+// [.col2]
+// --
+// [width=90%,grid=vertical,frame=none,cols="^1e,5"]
+// |===
+// |11 | [decent]#icon:vial[]# ZGC Experimental
+// |12 | [decent]#icon:vial[]# Shenandoah Experimental +
+//       [decent]#icon:compress-alt[] G1 Uncommit Memory# +
+//       [decent]#icon:undo[] ZGC Class Unloading#
+// |[decent]#13# | [decent]#icon:compress-alt[] ZGC Uncommit Memory#
+// |14 | icon:windows[] & icon:apple[] ZGC Support +
+//       icon:trash[] CMS Removal +
+//       [decent]#icon:bomb[] ParalellOldGC Deprecation#
+// |===
+// --
+// [.col2]
+// --
+// [width=90%,grid=vertical,frame=none,cols="^1e,5"]
+// |===
+// |15 | icon:award[] **Shenandoah** & +
+//       icon:award[] **ZGC** Production-ready
+// |[decent]#16# | [decent]#icon:chart-line[] ZGC Improvements#
+// | **17** | [decent]#icon:flag[] _Java 17 LTS_#
+// |[decent]#18# | [decent]#icon:clone[] ZGC String depduplication#
 
-|**21** | [icon:sort-amount-up[] Generational ZGC   +
-      [decent]#icon:life-ring[] Last Resort G1 Full GC#
+// |**21** | [icon:sort-amount-up[] Generational ZGC   +
+//       [decent]#icon:life-ring[] Last Resort G1 Full GC#
 
-|===
---
+// |===
+// --
 
-[.notes]
---
-. ZGC & Shenandoah nicht neu; bereits mit JDK15 production-ready
-. Viel Detailpflege auch an deren GCs. Allen voran G1: Dem Arbeitspferd & default in aktuellen JVMs. 
-. Neu in JDK21: ZGC unterstützt nun Generationen; gewinnt damit nochmals einen ordentlichen Performance-Boost
-. Übrigens: Auch Shenandoah, der ZGC sehr ählich ist, hatte lange Generational Support für JDK21 geplant; aber im letzten Moment Rückzieher gemacht. 
+// [.notes]
+// --
+// . ZGC & Shenandoah nicht neu; bereits mit JDK15 production-ready
+// . Viel Detailpflege auch an deren GCs. Allen voran G1: Dem Arbeitspferd & default in aktuellen JVMs. 
+// . Neu in JDK21: ZGC unterstützt nun Generationen; gewinnt damit nochmals einen ordentlichen Performance-Boost
+// . Übrigens: Auch Shenandoah, der ZGC sehr ählich ist, hatte lange Generational Support für JDK21 geplant; aber im letzten Moment Rückzieher gemacht. 
 
-Obwohl ZGC & Shenandoah vom Konzept vergleichbar sind, hat ZGC seinen Vorsprung damit nun in Java 21 weiter ausgebaut. Aber was zeichnet denn nun ZGC – und auch Shenandoah – nun aus? Und sind sie das richtige für mich? 
+// Obwohl ZGC & Shenandoah vom Konzept vergleichbar sind, hat ZGC seinen Vorsprung damit nun in Java 21 weiter ausgebaut. Aber was zeichnet denn nun ZGC – und auch Shenandoah – nun aus? Und sind sie das richtige für mich? 
 
-Dazu werfen wir einen näheren Blick auf die beiden und insbesondere bei ZGC unter die Haube…
---
+// Dazu werfen wir einen näheren Blick auf die beiden und insbesondere bei ZGC unter die Haube…
+// --
 
 
 
@@ -208,10 +209,17 @@ _„A scalable low-latency garbage collector“_
 * Heapgrößen  8MB – **16TB**
 * Einfaches bzw. Automatisches Tuning
 
+[.small]
+_Colored Pointers & Load/Write Barriers_ → Object Relocation
+
 [.left%step]
-[emphasize]#_Colored Pointers & Load/Write Barriers_ +
-→ Object Relocation#
+[emphasize]#Neu: Generational ZGC#
 --
+
+// . Neu in JDK21: ZGC unterstützt nun Generationen; gewinnt damit nochmals einen ordentlichen Performance-Boost
+// . Übrigens: Auch Shenandoah, der ZGC sehr ählich ist, hatte lange Generational Support für JDK21 geplant; aber im letzten Moment Rückzieher gemacht. 
+
+
 
 [.refs]
 --
@@ -254,8 +262,11 @@ _„A low-pause-time garbage collector by concurrent evacuation work“_ +
 
 * **Backports** für JDK 8 & 11; auch **32-bit**
 
-
 [x-small]#`-XX:+UseShenandoahGC`#
+
+
+[.left%step]
+[emphasize]#Knapp verpasst: Generational für JDK21!#
 --
 
 [.center]
@@ -348,42 +359,42 @@ image::gc-generations.png[Old Gen vs. Young Gen]
 
 --
 
-=== Generational GC's Status
+// === Generational GC's Status
 
-[.x-small,cols="^1,^1,2s",width=50%]
-|===
-| Young Gen | Old Gen | Garbage Collector
+// [.x-small,cols="^1,^1,2s",width=50%]
+// |===
+// | Young Gen | Old Gen | Garbage Collector
 
-2+| icon:check-square[set=far]
-<s| G1
+// 2+| icon:check-square[set=far]
+// <s| G1
 
-2+| icon:check-square[set=far] 
-<s| ZGC 
+// 2+| icon:check-square[set=far] 
+// <s| ZGC 
 
-2+| icon:square[set=far] 
-<s| Shenandoah
+// 2+| icon:square[set=far] 
+// <s| Shenandoah
 
-| icon:check-square[set=far] 
-| icon:check-square[set=far] 
-| Serial GC
+// | icon:check-square[set=far] 
+// | icon:check-square[set=far] 
+// | Serial GC
 
-| icon:check-square[set=far] 
-| icon:check-square[set=far] 
-| Parallel GC
+// | icon:check-square[set=far] 
+// | icon:check-square[set=far] 
+// | Parallel GC
 
-| [decent]#icon:square[set=far]#
-| [decent]#icon:check-square[set=far]#
-| [.line-through.decent]#CMS# 
+// | [decent]#icon:square[set=far]#
+// | [decent]#icon:check-square[set=far]#
+// | [.line-through.decent]#CMS# 
 
-| icon:square[set=far] 
-| icon:square[set=far] 
-| Epsilon GC
-|===
+// | icon:square[set=far] 
+// | icon:square[set=far] 
+// | Epsilon GC
+// |===
 
-[.decent.small]
-{nbsp} +
-Generational Ansatz nicht neu: GC früher separat für Young Gen & Old Gen getrennt! +
-Neue GCs managen den Heap alleine & vollständig.
+// [.decent.small]
+// {nbsp} +
+// Generational Ansatz nicht neu: GC früher separat für Young Gen & Old Gen getrennt! +
+// Neue GCs managen den Heap alleine & vollständig.
 
 
 
@@ -612,8 +623,8 @@ https://tschatzl.github.io/[JDK 18-21 G1/Parallel/Serial GC changes]
 
 [.degrade]
 == Exkurs: Preview features [preview]#Preview# [jep]#https://openjdk.java.net/jeps/12[JEP 12]#
-… sind neue **Sprach–, JVM– oder API-Features**, die bereits **[underline]#vollständig# spezifiziert und implementiert** sind, aber durch Community Feedback aus dem _„echten Leben“ zusätzlich validiert werden sollen. +
-[.x-small]#_z.B.: Pattern Matching, Switch Expression, Text Blocks, Records, Sealed Classes_#
+… sind neue **Sprach–, JVM– oder API-Features**, die bereits **[underline]#vollständig# spezifiziert und implementiert** sind, aber durch Community Feedback aus dem _„echten Leben“_ zusätzlich validiert werden sollen. +
+[.x-small.decent]#_z.B.: Pattern Matching, Switch Expression, Text Blocks, Records, Sealed Classes_#
 
 [.col2]
 --
@@ -634,7 +645,7 @@ $ java --enable-preview …
 [.clear]
 --
 {sp} +
-[.step.emphasize]#Keine Cross-compilation mittels `--release xx` möglich!#
+[.emphasize]#Keine Cross-compilation mittels `--release xx` möglich!#
 --
 [.notes]
 --
@@ -646,49 +657,56 @@ $ java --enable-preview …
 
 
 [.lightbg.forcetop,background-video= "pexels-cottonbro-7319201.mp4",options="loop,muted",background-opacity="1"]
-== Foreign Function & Memory API [preview]#Preview# 
+== Foreign Function & Memory API [preview]#3. Preview# 
 //[jep]#https://openjdk.java.net/jeps/442[JEP 442]#
-
-
-=== FFM: History
-
-[.x-small]
-[cols="^2,^1,>2,4",width="70%"]
-|===
-| JEP | JDK | Status | Titel
-
-| [jepinline]#https://openjdk.org/jeps/370[JEP 370]# | [versioninline]#14# | [previewinline]#Incubator# | Foreign-Memory Access API
-| [jepinline]#https://openjdk.org/jeps/383[JEP 383]# | [versioninline]#15# | [previewinline]#2. Incubator# | Foreign-Memory Access API
-| [jepinline]#https://openjdk.org/jeps/393[JEP 393]# | [versioninline]#16# | [previewinline]#3. Incubator# | Foreign-Memory Access API
-| [jepinline]#https://openjdk.org/jeps/389[JEP 389]# | [versioninline]#16# | [previewinline]#Incubator# | Foreign Linker API
-4+|
-| [jepinline]#https://openjdk.org/jeps/412[JEP 412]# | [versioninline]#17# | [previewinline]#Incubator# | Foreign Function & Memory API
-4+|
-| [jepinline]#https://openjdk.org/jeps/419[JEP 419]# | [versioninline]#18# | [previewinline]#2. Incubator# | Foreign Function & Memory API
-| [jepinline]#https://openjdk.org/jeps/424[JEP 424]# | [versioninline]#19# | [previewinline]#Preview# | Foreign Function & Memory API
-| [jepinline]#https://openjdk.org/jeps/434[JEP 434]# | [versioninline]#20# | [previewinline]#2. Preview# | Foreign Function & Memory API
-4+|
-| [jepinline]#https://openjdk.org/jeps/442[JEP 442]# | [versioninline]#21# | [previewinline]#3. Preview# | Foreign Function & Memory API
-|=== 
 
 [.notes]
 --
-.Historie:
-* Zwei JEPs / APIs: Memory Access API & Foreign Linker API
-* erstmals JDK14, dann 15, 16 und zusammengeführt in 17
-* Nun seit JDK 17 aus Incubator-Status raus, inzwischen 3.te Preview
-
-.Was ist neu seit JDK17?
-
-Viel Detailpflege
-
-* A new API to copy Java arrays to and from memory segments.
-* A more general dereference API
-* A simpler API to obtain method handles & manage temporal dependencies 
-* Enhancemtns to facilitate usage with pattern matching 
-* Optimize calls to  short-lived functions
-* uvm.
+* Erstmals aufgetacuht: JDK14;
+* aus zwei separaten JEPs in JDK 17 zusammengeführt
+* 6x Incubator; aktuell 3. Preview
 --
+
+
+// === FFM: History
+
+// [.x-small]
+// [cols="^2,^1,>2,4",width="70%"]
+// |===
+// | JEP | JDK | Status | Titel
+
+// | [jepinline]#https://openjdk.org/jeps/370[JEP 370]# | [versioninline]#14# | [previewinline]#Incubator# | Foreign-Memory Access API
+// | [jepinline]#https://openjdk.org/jeps/383[JEP 383]# | [versioninline]#15# | [previewinline]#2. Incubator# | Foreign-Memory Access API
+// | [jepinline]#https://openjdk.org/jeps/393[JEP 393]# | [versioninline]#16# | [previewinline]#3. Incubator# | Foreign-Memory Access API
+// | [jepinline]#https://openjdk.org/jeps/389[JEP 389]# | [versioninline]#16# | [previewinline]#Incubator# | Foreign Linker API
+// 4+|
+// | [jepinline]#https://openjdk.org/jeps/412[JEP 412]# | [versioninline]#17# | [previewinline]#Incubator# | Foreign Function & Memory API
+// 4+|
+// | [jepinline]#https://openjdk.org/jeps/419[JEP 419]# | [versioninline]#18# | [previewinline]#2. Incubator# | Foreign Function & Memory API
+// | [jepinline]#https://openjdk.org/jeps/424[JEP 424]# | [versioninline]#19# | [previewinline]#Preview# | Foreign Function & Memory API
+// | [jepinline]#https://openjdk.org/jeps/434[JEP 434]# | [versioninline]#20# | [previewinline]#2. Preview# | Foreign Function & Memory API
+// 4+|
+// | [jepinline]#https://openjdk.org/jeps/442[JEP 442]# | [versioninline]#21# | [previewinline]#3. Preview# | Foreign Function & Memory API
+// |=== 
+
+// [.notes]
+// --
+// .Historie:
+// * Zwei JEPs / APIs: Memory Access API & Foreign Linker API
+// * erstmals JDK14, dann 15, 16 und zusammengeführt in 17
+// * Nun seit JDK 17 aus Incubator-Status raus, inzwischen 3.te Preview
+
+// .Was ist neu seit JDK17?
+
+// Viel Detailpflege
+
+// * A new API to copy Java arrays to and from memory segments.
+// * A more general dereference API
+// * A simpler API to obtain method handles & manage temporal dependencies 
+// * Enhancemtns to facilitate usage with pattern matching 
+// * Optimize calls to  short-lived functions
+// * uvm.
+// --
 
 
 
@@ -724,11 +742,11 @@ bildquelle: https://developers.redhat.com/blog/2016/11/03/eclipse-for-jni-develo
 Starke Drittbibliotheken (z.B. ML, GPU, …) mit dynamischer Entwicklung +
 [decent]#_Tensorflow, CUDA, OpenGL, OpenSSL, fuse, libsodium, …_#
 
-[.x-small.fragment.tgap]
+[.x-small.tgap]
 > Introduce an API by which Java programs can interoperate with code and
 data outside of the Java runtime […] without the brittleness and danger of JNI.
 
-[.fragment.tgap]
+[.tgap]
 **Ziele:** _Einfachheit – Performance – Allgemeingültigkeit – Sicherheit_
 
 //  https://www.youtube.com/watch?v=B8k9QGvPxC0
@@ -1042,7 +1060,7 @@ Anderes: Direkt in GA, z.B.
 == Vector API [preview]#Incubator#
 
 [background-video="pexels-pressmaster--3141210-geometric-symetric.mp4",options="loop,muted",background-opacity="0.4"]
-=== Das Vektor-API [preview]#Incubator# [jep]#https://openjdk.java.net/jeps/448[JEP 448]#
+=== Das Vektor-API [preview]#6. Incubator# [jep]#https://openjdk.java.net/jeps/448[JEP 448]#
 
 > Introduce an API to express **vector computations** that reliably compile at runtime to optimal vector instructions on supported CPU architectures, thus achieving performance superior to equivalent scalar computations.
 
@@ -1055,6 +1073,12 @@ Anderes: Direkt in GA, z.B.
 //> The Vector API will make it possible to perform mathematical vector operations efficiently. A vector operation is, for example, a vector addition, as you may remember from math classes: image::https://www.happycoders.eu/wp-content/uploads/2021/12/java-vector-addition-400x91.png[]
 // > Modern CPUs can perform such operations up to a particular vector size in a single CPU cycle. The vector API will enable the JVM to map such operations to the most efficient instructions of the underlying CPU architecture.
 // > A sixth incubator of a vector API. This API expresses vector computations that reliably compile to optimal vector instructions on supported CPU architectures, achieving performance superior to equivalent scalar computations. […] ]Goals of the proposal include being clear and concise, being platform agnostic, and offering reliable runtime compilation and performance on x64 and AArch64 architectures. Other goals include graceful degradation when a vector computation cannot be fully expressed as a sequence of vector instructions.
+
+[.notes]
+--
+* Erstmals JDK16
+* JDK21: 6. Incubator
+--
 
 [.degrade]
 === _Vektor_-was? → Vektor-_Rechnung!_
@@ -1105,41 +1129,41 @@ Alignment with Project Valhalla — The long-term goal of the Vector API is to l
 
 
 
-=== Vector API: History
-[.x-small]
-[cols="^2,^1,>2,4",width="70%"]
-|===
-| JEP | JDK | Status | Titel
+// === Vector API: History
+// [.x-small]
+// [cols="^2,^1,>2,4",width="70%"]
+// |===
+// | JEP | JDK | Status | Titel
 
-| [jepinline]#https://openjdk.org/jeps/338[JEP 338]# | [versioninline]#16# | [previewinline]#Incubator# | Vector API
-4+|
-| [jepinline]#https://openjdk.org/jeps/414[JEP 414]# | [versioninline]#17# | [previewinline]#2. Incubator# | Vector API
-4+|
-| [jepinline]#https://openjdk.org/jeps/417[JEP 417]# | [versioninline]#18# | [previewinline]#3. Incubator# | Vector API
-| [jepinline]#https://openjdk.org/jeps/426[JEP 426]# | [versioninline]#19# | [previewinline]#4. Incubator# | Vector API
-| [jepinline]#https://openjdk.org/jeps/438[JEP 438]# | [versioninline]#20# | [previewinline]#5. Incubator# | Vector API
-4+|
-| [jepinline]#https://openjdk.org/jeps/448[JEP 448]# | [versioninline]#21# | [previewinline]#6. Incubator# | Vector API
-|=== 
+// | [jepinline]#https://openjdk.org/jeps/338[JEP 338]# | [versioninline]#16# | [previewinline]#Incubator# | Vector API
+// 4+|
+// | [jepinline]#https://openjdk.org/jeps/414[JEP 414]# | [versioninline]#17# | [previewinline]#2. Incubator# | Vector API
+// 4+|
+// | [jepinline]#https://openjdk.org/jeps/417[JEP 417]# | [versioninline]#18# | [previewinline]#3. Incubator# | Vector API
+// | [jepinline]#https://openjdk.org/jeps/426[JEP 426]# | [versioninline]#19# | [previewinline]#4. Incubator# | Vector API
+// | [jepinline]#https://openjdk.org/jeps/438[JEP 438]# | [versioninline]#20# | [previewinline]#5. Incubator# | Vector API
+// 4+|
+// | [jepinline]#https://openjdk.org/jeps/448[JEP 448]# | [versioninline]#21# | [previewinline]#6. Incubator# | Vector API
+// |=== 
 
-[.notes]
---
-.Historie:
-* Zwei JEPs / APIs: Memory Access API & Foreign Linker API
-* erstmals JDK14, dann 15, 16 und zusammengeführt in 17
-* Nun seit JDK 17 aus Incubator-Status raus, inzwischen 3.te Preview
+// [.notes]
+// --
+// .Historie:
+// * Zwei JEPs / APIs: Memory Access API & Foreign Linker API
+// * erstmals JDK14, dann 15, 16 und zusammengeführt in 17
+// * Nun seit JDK 17 aus Incubator-Status raus, inzwischen 3.te Preview
 
-.Was ist neu seit JDK17?
+// .Was ist neu seit JDK17?
 
-Viel Detailpflege
+// Viel Detailpflege
 
-* A new API to copy Java arrays to and from memory segments.
-* A more general dereference API
-* A simpler API to obtain method handles & manage temporal dependencies 
-* Enhancemtns to facilitate usage with pattern matching 
-* Optimize calls to  short-lived functions
-* uvm.
---
+// * A new API to copy Java arrays to and from memory segments.
+// * A more general dereference API
+// * A simpler API to obtain method handles & manage temporal dependencies 
+// * Enhancemtns to facilitate usage with pattern matching 
+// * Optimize calls to  short-lived functions
+// * uvm.
+// --
 
 
 
@@ -1286,6 +1310,8 @@ System.out.println(Arrays.equals(aResult, vResult) ? "Yep!" : "Duh!");
 ----
 [.fragment]
 `Yep!`
+[.fragment]
+Pitfall: Das _Masking_ wird nicht von allen CPUs unterstüzt!
 
 
 
@@ -1308,9 +1334,6 @@ for (int i = 0; i < a1.length; i += species.length()) {
 
 System.out.println(Arrays.equals(aResult, vResult) ? "Yep!" : "Duh!");
 ----
-
-[.fragment]
-Pitfall: Das _Masking_ wird nicht von allen CPUs unterstüzt!
 
 
 
@@ -1428,7 +1451,8 @@ public static void main(String[] args) {
 * `@replace` für **Textersetzungen**
 * `@link` ermöglicht **Verlinkungen**
 
-[.xx-small.decent.fragment]#Markup-_Tags_ haben die Form `@name` gefolgt von _Argumenten_ der Form `param="wert"` und sind als _Kommentare_ in der Sprache des Snippets verfasst. Mit `:` wirken sie auf die Folgezeile.#
+[.xx-small.decent.fragment]#Markup-_Tags_ haben die Form `@name` gefolgt von _Argumenten_ der Form `param="wert"` und sind als _Kommentare_ in der Sprache des Snippets verfasst. +
+Mit `:` wirken sie auf die Folgezeile.#
 --
 
 
@@ -1455,19 +1479,19 @@ public static void main(String[] args) {
 // [.xx-small.decent]#Markup-_Tags_ haben die Form `@name` gefolgt von _Argumenten_ der Form `param="wert"` und sind als _Kommentare_ in der Sprache des Snippets verfasst. Mit `:` wirken sie auf die Folgezeile.#
 // --
 
-[.degrade]
-=== Javadoc Code Snippets: Tags & Argumente
-[.x-small,cols=">1s,3e",width=70%,frame="none",lines="horizontal"]
-|===
-| Tag | Arguments
+// [.degrade]
+// === Javadoc Code Snippets: Tags & Argumente
+// [.x-small,cols=">1s,3e",width=70%,frame="none",lines="horizontal"]
+// |===
+// | Tag | Arguments
 
-| `@snippet` | `class`,  [.fragment.highlight-current-red]#`file`#, `id`, [.fragment.highlight-current-red]#`lang`#, `region`
-| `@start`    | `region`
-| `@end`      | `region`
-| `@highlight` | `substring`, `regex`, `region`, `type`
-| `@replace` | `substring`, `regex`, `region`, `replacement`
-| `@link`| `substring`, `regex`, `region`, `target`, `type`
-|===
+// | `@snippet` | `class`,  [.fragment.highlight-current-red]#`file`#, `id`, [.fragment.highlight-current-red]#`lang`#, `region`
+// | `@start`    | `region`
+// | `@end`      | `region`
+// | `@highlight` | `substring`, `regex`, `region`, `type`
+// | `@replace` | `substring`, `regex`, `region`, `replacement`
+// | `@link`| `substring`, `regex`, `region`, `target`, `type`
+// |===
 
 
 
