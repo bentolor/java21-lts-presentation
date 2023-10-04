@@ -633,8 +633,8 @@ aktuell: Vector API</p></div>
 <aside class="notes"><div class="paragraph"><p>Vieles über Incubator gereift. Manches über viele Iterationen
 * Vector: Aktuell 6. Incubator
 * FFM: Auch 6 Incubators</p></div>
-<div class="paragraph"><p>Anderes: Direkt in GA, z.B.</p></div>
-<div class="ulist"><ul><li><p>Scoped Values: 1. Incubator (v20) → 1. Preview (v21)</p></li></ul></div></aside></div></section>
+<div class="paragraph"><p>Anderes: Direkt in GA, z.B.
+* Scoped Values: 1. Incubator (v20) → 1. Preview (v21)</p></div></aside></div></section>
 <section><section id="_vector_api_incubator" class="lightbg" data-background-video="images/pexels-pressmaster--3141210-geometric-symetric.mp4" data-background-video-loop data-background-video-muted data-background-opacity="1"><h2>Vector API <span class="preview">Incubator</span></h2></section><section id="_das_vektor_api_incubator_jep_448" data-background-video="images/pexels-pressmaster--3141210-geometric-symetric.mp4" data-background-video-loop data-background-video-muted data-background-opacity="0.4"><h2>Das Vektor-API <span class="preview">Incubator</span> <span class="jep"><a href="https://openjdk.java.net/jeps/448">JEP 448</a></span></h2><div class="slide-content"><div class="quoteblock"><blockquote><div class="paragraph"><p>Introduce an API to express <strong>vector computations</strong> that reliably compile at runtime to optimal vector instructions on supported CPU architectures, thus achieving performance superior to equivalent scalar computations.</p></div></blockquote></div>
 <div class="openblock fragment xx-large emphasize"><div class="content"><div class="paragraph"><p>↓<br>
 <strong>???</strong></p></div></div></div></div></section><section id="_vektor_was_vektor_rechnung" class="degrade"><h2><em>Vektor</em>-was? → Vektor-<em>Rechnung!</em></h2><div class="slide-content"><div class="imageblock"><img src="images/vector-calculation.png" alt="Vector calcuation example" width="900"></div></div></section><section id="_das_vektor_api_im_portrait" class="columns"><h2>Das Vektor API im Portrait</h2><div class="slide-content"><div class="openblock column is-half small"><div class="content"><div class="ulist"><div class="title">Motivation</div><ul><li><p><strong>SIMD</strong> <span class="decent">(Single Instruction Multiple Data)</span>-Features aktueller CPUs <span class="decent">(SSE, AVX, 3DNow, AArch64: Neon)</span>.</p></li><li><p>→ <strong>Performance</strong> &amp; <span class="decent">(Energie-)</span> <strong>Effizienz</strong></p></li></ul></div>
@@ -920,7 +920,7 @@ Reveal.initialize({
   // Specify the average time in seconds that you think you will spend
   // presenting each slide. This is used to show a pacing timer in the
   // speaker view
-  defaultTiming: 40,
+  defaultTiming: 41,
   // Specify the total time in seconds that is available to
   // present.  If this is set to a nonzero value, the pacing
   // timer will work out the time available for each slide,
