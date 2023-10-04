@@ -48,7 +48,7 @@ Mein Name ist Benjamin Schmid und ich bin aktuell als Tech Lead & Account CTO be
 
 Seit über 20 Jahren bin ich in verschiedensten, technisch leitenden Rollen unterwegs  – vom Technology Advisor über Manager R&I bis zum Portfolio Manager – und immer gern vorne mit dabei, wenn es um Probleme, Fragen und Innovationen rund um methodischen & technologischen Fragestellung in der Softwareentwicklung geht. 
 
-Dabei war ich immer ein großer Freund von qualitativ hochwertigen, innovativer und lösungsorientierte Softwareentwicklung: Und das Java-Ökosystem bildet hier eine herovrragende Grundlage, weshalb es auch immer einen wichtigen Fokuspunkt für meine Arbeit darstellt.
+// Dabei war ich immer ein großer Freund von qualitativ hochwertigen, innovativer und lösungsorientierte Softwareentwicklung: Und das Java-Ökosystem bildet hier eine herovrragende Grundlage, weshalb es auch immer einen wichtigen Fokuspunkt für meine Arbeit darstellt.
 
 Heute freue ich mich besonder, wieder die Gelegenheit zu haben gemeinsam ein bisschen tiefer auf die neue Java LTS-Version 21 zu blicken. In unserer Sessions hier soll es daher weniger um prominente neue Sprachfeatures gehen, sondern wir wollen mehr Blick auf die Neuerungen bei den Internas, den eher nicht alltäglichen APIs und den Tools wagen! 
 
@@ -232,10 +232,10 @@ https://wiki.openjdk.java.net/display/zgc/Main
 * JDK seit 11; Production since JDK 15; dann auch mit Linux/Win/macOS
 * Ziele …
 * Pausen unabhängig von Heap **und** Live- & Root-Set
-* Eigenschaften: Parallel, Regionen-basiert,  _Compacting_ und _NUMA-aware_
-* Konzept: _Colored pointers_ plus _Load barriers_ → Relocation
-** "Schwuppizität" zum Preis von CPU und Gesamtlaufzeit
-** in JDK17 ohne Generation. seit JDK21: Generation. Kommen wir gleich drauf.
+//* Eigenschaften: Parallel, Regionen-basiert,  _Compacting_ und _NUMA-aware_
+* Konzept: _Colored pointers_ plus _Load barriers_
+//** "Schwuppizität" zum Preis von CPU und Gesamtlaufzeit
+* in JDK17 ohne Generation. seit JDK21: Generation. Kommen wir gleich drauf.
 
 --
 
@@ -1747,10 +1747,14 @@ JEP 451, "Prepare to Disallow the Dynamic Loading of Agents:: Dynamic Java agent
 
 [.col3-l.x-small]
 --
-.Tools
-* https://www.graalvm.org/[GraalVM]
-* https://jdk.java.net/panama/[Panama EAP Builds (`jextract`)]
-* https://github.com/openjdk/jmc[OpenJDK Mission Control]
+.Referenzwerke
+* https://javaalmanac.io/[**Java Almanac**]
+* https://chriswhocodes.com/vm-options-explorer.html[VM Options Explorer]
+* https://docs.oracle.com/en/java/javase/21/gctuning/[HotSpot Tuning Guide]
+* Vollständige & detaillierte Release +
+ Notes für Java https://www.oracle.com/java/technologies/javase/18all-relnotes.html[18] https://www.oracle.com/java/technologies/javase/19all-relnotes.html[19], https://www.oracle.com/java/technologies/javase/20all-relnotes.html[20] &  https://www.oracle.com/java/technologies/javase/21all-relnotes.html[21]
+* https://download.java.net/java/early_access/valhalla/docs/api/jdk.incubator.vector/jdk/incubator/vector/package-summary.html[Vector API EAP Apidoc]
+
 
 .Beispiele
 * https://github.com/openjdk/jextract/tree/master/samples[`jextract`-Examples]
@@ -1760,19 +1764,17 @@ JEP 451, "Prepare to Disallow the Dynamic Loading of Agents:: Dynamic Java agent
 
 [.col3-c.x-small]
 --
-.Referenzwerke
-* https://javaalmanac.io/[**Java Almanac**]
-* https://chriswhocodes.com/vm-options-explorer.html[VM Options Explorer]
-* https://docs.oracle.com/en/java/javase/21/gctuning/[HotSpot Tuning Guide]
-* Vollständige & detaillierte Release Notes für Java https://www.oracle.com/java/technologies/javase/18all-relnotes.html[18] https://www.oracle.com/java/technologies/javase/19all-relnotes.html[19], https://www.oracle.com/java/technologies/javase/20all-relnotes.html[20] &  https://www.oracle.com/java/technologies/javase/21all-relnotes.html[21]
-
+.Tools
+* https://www.graalvm.org/[GraalVM]
+* https://jdk.java.net/panama/[Panama EAP Builds (`jextract`)]
+* https://github.com/openjdk/jmc[OpenJDK Mission Control]
 
 .Artikel
 * „Java https://www.happycoders.eu/java/java-19-features/[18], https://www.happycoders.eu/java/java-19-features/[19], https://www.happycoders.eu/java/java-20-features/[20], https://www.happycoders.eu/java/java-21-features/[21] Features (with Examples)“
 * JDK https://tschatzl.github.io/2022/03/14/jdk18-g1-parallel-gc-changes.html[18], https://tschatzl.github.io/2022/09/16/jdk19-g1-parallel-gc-changes.html[19], https://tschatzl.github.io/2023/08/04/jdk21-g1-parallel-gc-changes.html[20], https://tschatzl.github.io/2023/08/04/jdk21-g1-parallel-gc-changes.html[21] G1/Parallel/Serial GC changes]
 
 .Videos
-* Empfehlenswert: https://www.youtube.com/channel/UCmRtPmgnQ04CMUpSUqPfhxQ[Offizieller „Java“-Kanale]
+* Empfehlenswert: https://www.youtube.com/channel/UCmRtPmgnQ04CMUpSUqPfhxQ[Offizieller „Java“-Kanal]
 --
 
 
