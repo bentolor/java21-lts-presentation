@@ -118,49 +118,49 @@ Aber Blicken wir kur auf unsere Programm für heute…
 --
 
 
-// [.degrade.x-small]
-// === GC Evolution Timeline
-// [.col2]
-// --
-// [width=90%,grid=vertical,frame=none,cols="^1e,5"]
-// |===
-// |11 | [decent]#icon:vial[]# ZGC Experimental
-// |12 | [decent]#icon:vial[]# Shenandoah Experimental +
-//       [decent]#icon:compress-alt[] G1 Uncommit Memory# +
-//       [decent]#icon:undo[] ZGC Class Unloading#
-// |[decent]#13# | [decent]#icon:compress-alt[] ZGC Uncommit Memory#
-// |14 | icon:windows[] & icon:apple[] ZGC Support +
-//       icon:trash[] CMS Removal +
-//       [decent]#icon:bomb[] ParalellOldGC Deprecation#
-// |===
-// --
-// [.col2]
-// --
-// [width=90%,grid=vertical,frame=none,cols="^1e,5"]
-// |===
-// |15 | icon:award[] **Shenandoah** & +
-//       icon:award[] **ZGC** Production-ready
-// |[decent]#16# | [decent]#icon:chart-line[] ZGC Improvements#
-// | **17** | [decent]#icon:flag[] _Java 17 LTS_#
-// |[decent]#18# | [decent]#icon:clone[] ZGC String depduplication#
+[.degrade.x-small]
+=== GC Evolution Timeline
+[.col2]
+--
+[width=90%,grid=vertical,frame=none,cols="^1e,5"]
+|===
+|11 | [decent]#icon:vial[]# ZGC Experimental
+|12 | [decent]#icon:vial[]# Shenandoah Experimental +
+      [decent]#icon:compress-alt[] G1 Uncommit Memory# +
+      [decent]#icon:undo[] ZGC Class Unloading#
+|[decent]#13# | [decent]#icon:compress-alt[] ZGC Uncommit Memory#
+|14 | icon:windows[] & icon:apple[] ZGC Support +
+      icon:trash[] CMS Removal +
+      [decent]#icon:bomb[] ParalellOldGC Deprecation#
+|===
+--
+[.col2]
+--
+[width=90%,grid=vertical,frame=none,cols="^1e,5"]
+|===
+|15 | icon:award[] **Shenandoah** & +
+      icon:award[] **ZGC** Production-ready
+|[decent]#16# | [decent]#icon:chart-line[] ZGC Improvements#
+| **17** | [decent]#icon:flag[] _Java 17 LTS_#
+|[decent]#18# | [decent]#icon:clone[] ZGC String depduplication#
 
-// |**21** | [icon:sort-amount-up[] Generational ZGC   +
-//       [decent]#icon:life-ring[] Last Resort G1 Full GC#
+|**21** | [icon:sort-amount-up[] Generational ZGC   +
+      [decent]#icon:life-ring[] Last Resort G1 Full GC#
 
-// |===
-// --
+|===
+--
 
-// [.notes]
-// --
-// . ZGC & Shenandoah nicht neu; bereits mit JDK15 production-ready
-// . Viel Detailpflege auch an deren GCs. Allen voran G1: Dem Arbeitspferd & default in aktuellen JVMs. 
-// . Neu in JDK21: ZGC unterstützt nun Generationen; gewinnt damit nochmals einen ordentlichen Performance-Boost
-// . Übrigens: Auch Shenandoah, der ZGC sehr ählich ist, hatte lange Generational Support für JDK21 geplant; aber im letzten Moment Rückzieher gemacht. 
+[.notes]
+--
+. ZGC & Shenandoah nicht neu; bereits mit JDK15 production-ready
+. Viel Detailpflege auch an deren GCs. Allen voran G1: Dem Arbeitspferd & default in aktuellen JVMs. 
+. Neu in JDK21: ZGC unterstützt nun Generationen; gewinnt damit nochmals einen ordentlichen Performance-Boost
+. Übrigens: Auch Shenandoah, der ZGC sehr ählich ist, hatte lange Generational Support für JDK21 geplant; aber im letzten Moment Rückzieher gemacht. 
 
-// Obwohl ZGC & Shenandoah vom Konzept vergleichbar sind, hat ZGC seinen Vorsprung damit nun in Java 21 weiter ausgebaut. Aber was zeichnet denn nun ZGC – und auch Shenandoah – nun aus? Und sind sie das richtige für mich? 
+Obwohl ZGC & Shenandoah vom Konzept vergleichbar sind, hat ZGC seinen Vorsprung damit nun in Java 21 weiter ausgebaut. Aber was zeichnet denn nun ZGC – und auch Shenandoah – nun aus? Und sind sie das richtige für mich? 
 
-// Dazu werfen wir einen näheren Blick auf die beiden und insbesondere bei ZGC unter die Haube…
-// --
+Dazu werfen wir einen näheren Blick auf die beiden und insbesondere bei ZGC unter die Haube…
+--
 
 
 
@@ -602,19 +602,19 @@ https://tschatzl.github.io/[JDK 18-21 G1/Parallel/Serial GC changes]
 > G1 GC has also benefited from some new optimizations: full GCs have been optimized and the Hot Card Cache, which was proving to bring no benefit, has been removed, freeing up some native memory (0.2% of the heap size).
 --
 
-//=== TL;DR: Tipps für den GC
-//
-//[%step.statement.tgap]
-//icon:level-up-alt[] Upgrade lohnt sich!
-//
-//[%step.statement]
-//icon:stopwatch[] Latenz wichtig? → ZGC
-//
-//[%step.statement]
-//icon:graduation-cap[] „Probieren geht über Studieren!“
-//
-//[%step.statement]
-//icon:trash-alt[] Mut zum Loslassen: GC-Parameter
+=== TL;DR: Tipps für den GC
+
+[%step.statement.tgap]
+icon:level-up-alt[] Upgrade lohnt sich!
+
+[%step.statement]
+icon:stopwatch[] Latenz wichtig? → ZGC
+
+[%step.statement]
+icon:graduation-cap[] „Probieren geht über Studieren!“
+
+[%step.statement]
+icon:trash-alt[] Mut zum Loslassen: GC-Parameter
 
 
 
@@ -668,45 +668,45 @@ $ java --enable-preview …
 --
 
 
-// === FFM: History
+=== FFM: History
 
-// [.x-small]
-// [cols="^2,^1,>2,4",width="70%"]
-// |===
-// | JEP | JDK | Status | Titel
+[.x-small]
+[cols="^2,^1,>2,4",width="70%"]
+|===
+| JEP | JDK | Status | Titel
 
-// | [jepinline]#https://openjdk.org/jeps/370[JEP 370]# | [versioninline]#14# | [previewinline]#Incubator# | Foreign-Memory Access API
-// | [jepinline]#https://openjdk.org/jeps/383[JEP 383]# | [versioninline]#15# | [previewinline]#2. Incubator# | Foreign-Memory Access API
-// | [jepinline]#https://openjdk.org/jeps/393[JEP 393]# | [versioninline]#16# | [previewinline]#3. Incubator# | Foreign-Memory Access API
-// | [jepinline]#https://openjdk.org/jeps/389[JEP 389]# | [versioninline]#16# | [previewinline]#Incubator# | Foreign Linker API
-// 4+|
-// | [jepinline]#https://openjdk.org/jeps/412[JEP 412]# | [versioninline]#17# | [previewinline]#Incubator# | Foreign Function & Memory API
-// 4+|
-// | [jepinline]#https://openjdk.org/jeps/419[JEP 419]# | [versioninline]#18# | [previewinline]#2. Incubator# | Foreign Function & Memory API
-// | [jepinline]#https://openjdk.org/jeps/424[JEP 424]# | [versioninline]#19# | [previewinline]#Preview# | Foreign Function & Memory API
-// | [jepinline]#https://openjdk.org/jeps/434[JEP 434]# | [versioninline]#20# | [previewinline]#2. Preview# | Foreign Function & Memory API
-// 4+|
-// | [jepinline]#https://openjdk.org/jeps/442[JEP 442]# | [versioninline]#21# | [previewinline]#3. Preview# | Foreign Function & Memory API
-// |=== 
+| [jepinline]#https://openjdk.org/jeps/370[JEP 370]# | [versioninline]#14# | [previewinline]#Incubator# | Foreign-Memory Access API
+| [jepinline]#https://openjdk.org/jeps/383[JEP 383]# | [versioninline]#15# | [previewinline]#2. Incubator# | Foreign-Memory Access API
+| [jepinline]#https://openjdk.org/jeps/393[JEP 393]# | [versioninline]#16# | [previewinline]#3. Incubator# | Foreign-Memory Access API
+| [jepinline]#https://openjdk.org/jeps/389[JEP 389]# | [versioninline]#16# | [previewinline]#Incubator# | Foreign Linker API
+4+|
+| [jepinline]#https://openjdk.org/jeps/412[JEP 412]# | [versioninline]#17# | [previewinline]#Incubator# | Foreign Function & Memory API
+4+|
+| [jepinline]#https://openjdk.org/jeps/419[JEP 419]# | [versioninline]#18# | [previewinline]#2. Incubator# | Foreign Function & Memory API
+| [jepinline]#https://openjdk.org/jeps/424[JEP 424]# | [versioninline]#19# | [previewinline]#Preview# | Foreign Function & Memory API
+| [jepinline]#https://openjdk.org/jeps/434[JEP 434]# | [versioninline]#20# | [previewinline]#2. Preview# | Foreign Function & Memory API
+4+|
+| [jepinline]#https://openjdk.org/jeps/442[JEP 442]# | [versioninline]#21# | [previewinline]#3. Preview# | Foreign Function & Memory API
+|=== 
 
-// [.notes]
-// --
-// .Historie:
-// * Zwei JEPs / APIs: Memory Access API & Foreign Linker API
-// * erstmals JDK14, dann 15, 16 und zusammengeführt in 17
-// * Nun seit JDK 17 aus Incubator-Status raus, inzwischen 3.te Preview
+[.notes]
+--
+.Historie:
+* Zwei JEPs / APIs: Memory Access API & Foreign Linker API
+* erstmals JDK14, dann 15, 16 und zusammengeführt in 17
+* Nun seit JDK 17 aus Incubator-Status raus, inzwischen 3.te Preview
 
-// .Was ist neu seit JDK17?
+.Was ist neu seit JDK17?
 
-// Viel Detailpflege
+Viel Detailpflege
 
-// * A new API to copy Java arrays to and from memory segments.
-// * A more general dereference API
-// * A simpler API to obtain method handles & manage temporal dependencies 
-// * Enhancemtns to facilitate usage with pattern matching 
-// * Optimize calls to  short-lived functions
-// * uvm.
-// --
+* A new API to copy Java arrays to and from memory segments.
+* A more general dereference API
+* A simpler API to obtain method handles & manage temporal dependencies 
+* Enhancemtns to facilitate usage with pattern matching 
+* Optimize calls to  short-lived functions
+* uvm.
+--
 
 
 
@@ -942,74 +942,74 @@ https://github.com/openjdk/jextract[Project Panama jextract]
 
 
 [%notitle,background-video="native-python-fast-cut.mp4",background-size="contain"]
-=== `jextract` Demo
+=== `jextract` Demo (JDK17)
 
-// === `jextract` Demo (Transcript)
+=== `jextract` Demo JDK17 – Transcript
 
-// [source.col2.x-small,bash]
-// ----
-// mkdir hello-python
-// cd hello-python
+[source.col2.x-small,bash]
+----
+mkdir hello-python
+cd hello-python
 
-// locate Python.h
+locate Python.h
 
-// jextract -t de.bentolor \
-//          -l python3.8 \
-//          -I /usr/include/python3.8/ \
-//          -I /usr/include/ \
-//          /usr/include/python3.8/Python.h
+jextract -t de.bentolor \
+         -l python3.8 \
+         -I /usr/include/python3.8/ \
+         -I /usr/include/ \
+         /usr/include/python3.8/Python.h
 
-// joe Schlange.java
+joe Schlange.java
 
-// java --add-modules jdk.incubator.foreign \
-//      --enable-native-access=ALL-UNNAMED \
-//      -Djava.library.path=/usr/lib/x86_64-linux-gnu/ \
-//      Schlange.java
+java --add-modules jdk.incubator.foreign \
+     --enable-native-access=ALL-UNNAMED \
+     -Djava.library.path=/usr/lib/x86_64-linux-gnu/ \
+     Schlange.java
 
-// jextract -t de.bentolor \
-//          -l python3.8 \
-//          -I /usr/include/python3.8/ \
-//          -I /usr/include/ \
-//          --source
-//          /usr/include/python3.8/Python.h
+jextract -t de.bentolor \
+         -l python3.8 \
+         -I /usr/include/python3.8/ \
+         -I /usr/include/ \
+         --source
+         /usr/include/python3.8/Python.h
 
-// bat de/bentolor/Python_h.java
+bat de/bentolor/Python_h.java
 
-// bat de/bentolor/Python_h_4.java
-// /s int PyRun_S
-// ----
+bat de/bentolor/Python_h_4.java
+/s int PyRun_S
+----
 
-// [source.col2.x-small,java]
-// ----
-// import jdk.incubator.foreign.*;
-// import de.bentolor.Python_h;
+[source.col2.x-small,java]
+----
+import jdk.incubator.foreign.*;
+import de.bentolor.Python_h;
 
-// public class Schlange {
-//   public static void main(String[] args) {
-//     String script = """
-//             print(sum([33, 55, 66]));
-//             print('Hello Python 3!')
-//             """;
+public class Schlange {
+  public static void main(String[] args) {
+    String script = """
+            print(sum([33, 55, 66]));
+            print('Hello Python 3!')
+            """;
 
-//     Python_h.Py_Initialize();
-//     try (var scope = ResourceScope.newConfinedScope()) {
-//         var str = CLinker.toCString(script, scope);
-//         Python_h.PyRun_SimpleStringFlags(
-//               str, MemoryAddress.NULL);
-//         Python_h.Py_Finalize();
-//     }
-//   }
-// }
-// ----
+    Python_h.Py_Initialize();
+    try (var scope = ResourceScope.newConfinedScope()) {
+        var str = CLinker.toCString(script, scope);
+        Python_h.PyRun_SimpleStringFlags(
+              str, MemoryAddress.NULL);
+        Python_h.Py_Finalize();
+    }
+  }
+}
+----
 
-// import de.bentolor.unistd_h;
+import de.bentolor.unistd_h;
 
-// class CallPid {
-//    public static void main(String[] args) {
-//       System.out.println( unistd_h.getpid() );
-//       System.out.println( ProcessHandle.current().pid() );
-//   }
-// }
+class CallPid {
+   public static void main(String[] args) {
+      System.out.println( unistd_h.getpid() );
+      System.out.println( ProcessHandle.current().pid() );
+  }
+}
 
 
 
@@ -1129,41 +1129,41 @@ Alignment with Project Valhalla — The long-term goal of the Vector API is to l
 
 
 
-// === Vector API: History
-// [.x-small]
-// [cols="^2,^1,>2,4",width="70%"]
-// |===
-// | JEP | JDK | Status | Titel
+=== Vector API: History
+[.x-small]
+[cols="^2,^1,>2,4",width="70%"]
+|===
+| JEP | JDK | Status | Titel
 
-// | [jepinline]#https://openjdk.org/jeps/338[JEP 338]# | [versioninline]#16# | [previewinline]#Incubator# | Vector API
-// 4+|
-// | [jepinline]#https://openjdk.org/jeps/414[JEP 414]# | [versioninline]#17# | [previewinline]#2. Incubator# | Vector API
-// 4+|
-// | [jepinline]#https://openjdk.org/jeps/417[JEP 417]# | [versioninline]#18# | [previewinline]#3. Incubator# | Vector API
-// | [jepinline]#https://openjdk.org/jeps/426[JEP 426]# | [versioninline]#19# | [previewinline]#4. Incubator# | Vector API
-// | [jepinline]#https://openjdk.org/jeps/438[JEP 438]# | [versioninline]#20# | [previewinline]#5. Incubator# | Vector API
-// 4+|
-// | [jepinline]#https://openjdk.org/jeps/448[JEP 448]# | [versioninline]#21# | [previewinline]#6. Incubator# | Vector API
-// |=== 
+| [jepinline]#https://openjdk.org/jeps/338[JEP 338]# | [versioninline]#16# | [previewinline]#Incubator# | Vector API
+4+|
+| [jepinline]#https://openjdk.org/jeps/414[JEP 414]# | [versioninline]#17# | [previewinline]#2. Incubator# | Vector API
+4+|
+| [jepinline]#https://openjdk.org/jeps/417[JEP 417]# | [versioninline]#18# | [previewinline]#3. Incubator# | Vector API
+| [jepinline]#https://openjdk.org/jeps/426[JEP 426]# | [versioninline]#19# | [previewinline]#4. Incubator# | Vector API
+| [jepinline]#https://openjdk.org/jeps/438[JEP 438]# | [versioninline]#20# | [previewinline]#5. Incubator# | Vector API
+4+|
+| [jepinline]#https://openjdk.org/jeps/448[JEP 448]# | [versioninline]#21# | [previewinline]#6. Incubator# | Vector API
+|=== 
 
-// [.notes]
-// --
-// .Historie:
-// * Zwei JEPs / APIs: Memory Access API & Foreign Linker API
-// * erstmals JDK14, dann 15, 16 und zusammengeführt in 17
-// * Nun seit JDK 17 aus Incubator-Status raus, inzwischen 3.te Preview
+[.notes]
+--
+.Historie:
+* Zwei JEPs / APIs: Memory Access API & Foreign Linker API
+* erstmals JDK14, dann 15, 16 und zusammengeführt in 17
+* Nun seit JDK 17 aus Incubator-Status raus, inzwischen 3.te Preview
 
-// .Was ist neu seit JDK17?
+.Was ist neu seit JDK17?
 
-// Viel Detailpflege
+Viel Detailpflege
 
-// * A new API to copy Java arrays to and from memory segments.
-// * A more general dereference API
-// * A simpler API to obtain method handles & manage temporal dependencies 
-// * Enhancemtns to facilitate usage with pattern matching 
-// * Optimize calls to  short-lived functions
-// * uvm.
-// --
+* A new API to copy Java arrays to and from memory segments.
+* A more general dereference API
+* A simpler API to obtain method handles & manage temporal dependencies 
+* Enhancemtns to facilitate usage with pattern matching 
+* Optimize calls to  short-lived functions
+* uvm.
+--
 
 
 
@@ -1417,7 +1417,7 @@ public static void main(String[] args) {
 …auch programmatische Verwendung möglich.
 
 
-[.columns.left.small]
+[.columns.left.small%auto-animate%auto-animate-restart]
 === `javadoc` Code Snippets [jep]#https://openjdk.java.net/jeps/413[JEP 413]#
 [.column]
 --
@@ -1457,41 +1457,41 @@ Mit `:` wirken sie auf die Folgezeile.#
 
 
 
-// [.columns.left.small]
-// === `javadoc` Code Snippets [jep]#https://openjdk.java.net/jeps/413[JEP 413]#
-// [.column]
-// --
-// .Neues `{@snippet : … }` tag 
-// * Inhalte _inline_ oder über _externe Dateien_
-// * Unterstützt verschiedene Snippet-Sprachen
+[.columns.left.small%auto-animate]
+=== `javadoc` Code Snippets [jep]#https://openjdk.java.net/jeps/413[JEP 413]#
+[.column]
+--
+.Neues `{@snippet : … }` tag 
+* Inhalte _inline_ oder über _externe Dateien_
+* Unterstützt verschiedene Snippet-Sprachen
 
-// image:javadoc-result.png[Javadoc result, 1200]
-// --
+image:javadoc-result.png[Javadoc result, 1200]
+--
 
-// [.column]
-// --
-// .Unterstützte Markup Tags:
-// * `@start` & `@end` _Regions_ für referenzierbare Ausschnitte
-// * `@highlight`-ing anhand  RegEx, Regions oder Text
-// * `@replace` für Textersetzungen
-// * `@link` ermöglicht Verlinkungen
+[.column]
+--
+.Unterstützte Markup Tags:
+* `@start` & `@end` _Regions_ für referenzierbare Ausschnitte
+* `@highlight`-ing anhand  RegEx, Regions oder Text
+* `@replace` für Textersetzungen
+* `@link` ermöglicht Verlinkungen
 
-// [.xx-small.decent]#Markup-_Tags_ haben die Form `@name` gefolgt von _Argumenten_ der Form `param="wert"` und sind als _Kommentare_ in der Sprache des Snippets verfasst. Mit `:` wirken sie auf die Folgezeile.#
-// --
+[.xx-small.decent]#Markup-_Tags_ haben die Form `@name` gefolgt von _Argumenten_ der Form `param="wert"` und sind als _Kommentare_ in der Sprache des Snippets verfasst. Mit `:` wirken sie auf die Folgezeile.#
+--
 
-// [.degrade]
-// === Javadoc Code Snippets: Tags & Argumente
-// [.x-small,cols=">1s,3e",width=70%,frame="none",lines="horizontal"]
-// |===
-// | Tag | Arguments
+[.degrade]
+=== Javadoc Code Snippets: Tags & Argumente
+[.x-small,cols=">1s,3e",width=70%,frame="none",lines="horizontal"]
+|===
+| Tag | Arguments
 
-// | `@snippet` | `class`,  [.fragment.highlight-current-red]#`file`#, `id`, [.fragment.highlight-current-red]#`lang`#, `region`
-// | `@start`    | `region`
-// | `@end`      | `region`
-// | `@highlight` | `substring`, `regex`, `region`, `type`
-// | `@replace` | `substring`, `regex`, `region`, `replacement`
-// | `@link`| `substring`, `regex`, `region`, `target`, `type`
-// |===
+| `@snippet` | `class`,  [.fragment.highlight-current-red]#`file`#, `id`, [.fragment.highlight-current-red]#`lang`#, `region`
+| `@start`    | `region`
+| `@end`      | `region`
+| `@highlight` | `substring`, `regex`, `region`, `type`
+| `@replace` | `substring`, `regex`, `region`, `replacement`
+| `@link`| `substring`, `regex`, `region`, `target`, `type`
+|===
 
 
 
@@ -1611,12 +1611,14 @@ Der _default charset_ kommt in der Java API z.B. bei `FileReader/Writer`, `Input
 
 [.fragment.tgap]
 .Je nach Betriebssystem, Region- und Spracheinstellung: 
+
 [source,java]
 ----
-java.io.FileReader(“hello.txt”) // -> "こんにちは"         (macOS)
-java.io.FileReader(“hello.txt”) // -> "ã?“ã‚“ã?«ã?¡ã? "  (Windows (en-US))
-java.io.FileReader(“hello.txt”) // -> "縺ォ縺。縺ッ"       (Windows (ja-JP)
+java.io.FileReader("hello.txt") // -> "こんにちは"        (macOS)
+java.io.FileReader("hello.txt") // -> "ã?“ã‚“ã?«ã?¡ã? "  (Windows [en-US])
+java.io.FileReader("hello.txt") // -> "縺ォ縺。縺ッ"      (Windows [ja-JP])
 ----
+
 
 [.tgap.fragment]
 **Verschärfend:** [.emphasize]#Neuere Java APIs wie `Files.write/readString()`, und `Files.newBufferedReader/Writer()` verwendeten dagegen bereits stets UTF-8!#
