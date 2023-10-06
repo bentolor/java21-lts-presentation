@@ -3,10 +3,13 @@
 # Inital Setup see:
 #    https://asciidoctor.org/docs/asciidoctor-revealjs/
 set -e
-SRCFILE=presentation.adoc
+SRCFILES=(present*.adoc)
 
-echo "Rendering presentation.adoc"
-bundle exec asciidoctor-revealjs --require asciidoctor-kroki --require asciidoctor-chart  $SRCFILE
+for SRCFILE in "${SRCFILES[@]}"
+do
+  echo "Rendering $SRCFILE"
+  bundle exec asciidoctor-revealjs --require asciidoctor-kroki --require asciidoctor-chart  $SRCFILE
+done
 
 echo "Starting Webserver on :8000"
 python3 -m http.server >/dev/null 2>&1 & 
@@ -20,5 +23,9 @@ echo "Watching *.adoc for changes"
 inotifywait -m -e close_write *.adoc |
 while read events; do
   echo $events
-  bundle exec asciidoctor-revealjs --require asciidoctor-kroki --require asciidoctor-chart $SRCFILE
+  for SRCFILE in "${SRCFILES[@]}"
+  do
+    echo "Rendering $SRCFILE"
+    bundle exec asciidoctor-revealjs --require asciidoctor-kroki --require asciidoctor-chart  $SRCFILE
+  done
 done
